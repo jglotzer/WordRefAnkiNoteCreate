@@ -2,7 +2,7 @@
 
 # Requires and inspired by wordreference python module https://github.com/n-wissam/wordreference
 # This code requires wordreference module.
-# This code also requires Anki running with the AnkiConnct AddOn installed.
+# This code requires Anki running with the AnkiConnct AddOn installed.
 # Download page for AnkiConnect AddOn https://ankiweb.net/shared/info/2055492159
 # Home page for AnkiConnect https://foosoft.net/projects/anki-connect/
 import wordreference as wr
@@ -37,7 +37,7 @@ yellow = '#FCE94F'
 cyan = '#34E2E2'
 purple = '#AD7FA8'
 
-# Use a Json Sting to send an addNote command to the Anki Connect server.
+# Use a passed in Json String to send an addNote command to the Anki Connect server.
 # Code modified from that on AnkiConnect website.
 def invoke_json(requestJsonString):
     encodedJsonString = requestJsonString.encode('utf-8')
@@ -62,13 +62,13 @@ def print_translations(translations, colors=""):
 
 # Gen the HTML code for the translations that will go on back of created card.
 def gen_translations_for_connect(word, translations):
-    return_str = ""
+    return_str = "<pre>"
     for value in translations.values():
         return_str += f"<font color={cyan}>"
         for meaning in value["meanings"]:
-            return_str += f"{meaning} " #meaning is English Meaning.
+            return_str += f"{meaning} " # meaning is English Meaning.
         return_str += f"</font> &nbsp;&nbsp; <font color={purple}>{value['definition']}</font><br>" #definition is French definition.
-    return return_str[:-4] #get rid of last <br>
+    return return_str[:-4] + "</pre>" # get rid of last <br>, close tag.
 
 # Print examples to the terminal in an Anki Card specific way.
 def print_examples(translations):
@@ -76,19 +76,19 @@ def print_examples(translations):
     for value in translations.values():
         for examples_list in value["examples"]:
             for example in range(len(examples_list)):
-                if not example:
+                if not example: # Only want French examples, not their English translations.
                     print("\033[93m"  + examples_list[example])
     print('\033[0m', end='')
 
 # Gen the HTML code for the examples that will go on front of created card.
 def gen_examples_for_connect(word, translations):
-    return_str=f"<i><font color={yellow}>"
+    return_str=f"<pre><i><font color={yellow}>"
     for value in translations.values():
         for examples_list in value["examples"]:
             for example in range(len(examples_list)):
-                if not example:
+                if not example: # Only want French examples, not their English translations.
                     return_str += f"{examples_list[example]}<br>"
-    return_str = return_str[:-4]  + "</font></i>" # get rid of last <br>, close tags.
+    return_str = return_str[:-4]  + "</font></i></pre>" # get rid of last <br>, close tags.
     return return_str
 
 def parse_arguments():
@@ -120,7 +120,7 @@ def main():
     print('\n')
     print_translations(translations)
     print('\n')
-    # If connect argument is given also generated a card using Anki Connect.
+    # If connect argument is given also generate a card using Anki Connect.
     if args.connect:
        tmp_front_str = gen_examples_for_connect(args.word, translations)
        front_str = f"<b>{args.word}</b></font><br><br>" + tmp_front_str
