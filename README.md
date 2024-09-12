@@ -6,6 +6,7 @@ This used to be a tedious, manual process - what once took many minutes to creat
 Note: Code does **not** add photos, that is required to be done manually by the user.
 
 # Usage
+```text
 usage: WordReferenceAnkiNoteCreate.py [-h] [-c] DICTIONARY_CODE word
 
 get translation and/or make Anki note using wordreference.com
@@ -19,6 +20,7 @@ positional arguments:
 options:
   -h, --help       show this help message and exit
   -c, --connect    create an Anki Note as well
+```
 
 # Dependencies
 * wordreference.py [wordreference.py](https://github.com/n-wissam/wordreference)
