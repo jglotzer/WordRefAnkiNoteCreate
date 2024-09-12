@@ -1,24 +1,44 @@
 # WordRefAnkiNoteCreate
-Command line utility for creating Anki Notes using WordReference.com
+A python command line utility for creating Anki Notes using wordreference.com, wordreference.py, Anki and the AnkiConnect AddOn.
 
-As a long time user of both Anki and WordReference.com for language learning I've
-always wanted to be able to automate Anki Note creation based on the content available
-at WordReference.com.
+This used to be a tedious, manual process - what once took many minutes to create a note now done in seconds.
 
-Anki is a platform for creating and reviewing flash cards, often for language learning
-but many other applications are possible.
+Note: Code does **not** add photos, that is required to be done manually by the user.
 
-WordReference.com is a site with a large number of bilingual dictionaries (French/English,
-Spanish/Portugese, etc.).
+# Usage
+usage: WordReferenceAnkiNoteCreate.py [-h] [-c] DICTIONARY_CODE word
 
-Creating Notes (Notes in Anki means a "card" with two sides) in Anki can be laborious,
-time consuming and error prone (like all manual activities).
+get translation and/or make Anki note using wordreference.com
+Console output only without the -c switch.
+Console output and Anki Note created with the -c switch.
 
-The goal of this project is to automate Anki Note creation by using content from
-WordReference.com.
+positional arguments:
+  DICTIONARY_CODE  dictionary code
+  word             word to translate for Anki Note
 
-Here are a couple of examples of Anki Notes created programmatically.
+options:
+  -h, --help       show this help message and exit
+  -c, --connect    create an Anki Note as well
 
+# Dependencies
+* wordreference.py [wordreference.py](https://github.com/n-wissam/wordreference)
+* Anki running with AnkiConnect AddOn installed [AnkiConnect AddOn](https://foosoft.net/projects/anki-connect/)
+
+# User Changes Needed
+* Change name of Anki Deck to suit (currently set to French).
+* Supply desired 4 character dictionary code on command line.
+ * to get list of codes run wordreference.py -l
+
+# Screenshots
+Console output:
+![bâtonnet_console_screenshot](https://github.com/user-attachments/assets/e60d847b-5c6b-4cb1-8c80-19cb4fd6b882)
+
+Resulting Anki Note created (Photos to be added by user, not added by code):
 ![bâtonnet_screenshot](https://github.com/user-attachments/assets/b43ea9be-c5ef-4c69-9834-898569f9082b)
 
-![trèfle_screenshot](https://github.com/user-attachments/assets/51290f4e-27c4-4d87-8e0c-4da3afd3c50a)
+# Acknowledgements
+* wordreference.com [wordreference.com](https://www.wordreference.com)
+* wordreference.py [wordreference.py](https://github.com/n-wissam/wordreference)
+* Anki [https://apps.ankiweb.net/](https://apps.ankiweb.net/)
+* AnkiConnect [AnkiConnect AddOn](https://foosoft.net/projects/anki-connect/)
+
