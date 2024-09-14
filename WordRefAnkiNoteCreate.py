@@ -83,13 +83,16 @@ def print_examples(translations):
 # Gen the HTML code for the examples that will go on front of created card.
 def gen_examples_for_connect(word, translations):
     return_str=f"<pre><i><font color={yellow}>"
+    num_examples = 0
     for value in translations.values():
         for examples_list in value["examples"]:
             for example in range(len(examples_list)):
                 if not example: # Only want French examples, not their English translations.
                     return_str += f"{examples_list[example]}<br>"
-    return_str = return_str[:-4]  + "</font></i></pre>" # get rid of last <br>, close tags.
-    return return_str
+                    num_examples += 1
+    if num_examples > 0:
+        return_str = return_str[:-4] # get rid of last <br> tag if at least 1 example.
+    return return_str + "</font></i></pre>" # close tags.
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="get translation and/or make Anki Card using wordreference.com ")
