@@ -82,7 +82,7 @@ def print_examples(translations):
 
 # Gen the HTML code for the examples that will go on front of created card.
 def gen_examples_for_connect(word, translations):
-    return_str=f"<pre><i><font color={yellow}>"
+    return_str=f"<i><font color={yellow}>"
     num_examples = 0
     for value in translations.values():
         for examples_list in value["examples"]:
@@ -92,7 +92,7 @@ def gen_examples_for_connect(word, translations):
                     num_examples += 1
     if num_examples > 0:
         return_str = return_str[:-4] # get rid of last <br> tag if at least 1 example.
-    return return_str + "</font></i></pre>" # close tags.
+    return return_str + "</font></i>" # close tags.
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="get translation and/or make Anki Card using wordreference.com ")
@@ -126,7 +126,7 @@ def main():
     # If connect argument is given also generate a card using Anki Connect.
     if args.connect:
        tmp_front_str = gen_examples_for_connect(args.word, translations)
-       front_str = f"<b>{args.word}</b></font><br><br>" + tmp_front_str
+       front_str = f"<pre><b>{args.word}</b></font><br><br>" + tmp_front_str + "</pre>"
        #print(front_str)
        back_str = gen_translations_for_connect(args.word, translations)
        #print(back_str)
