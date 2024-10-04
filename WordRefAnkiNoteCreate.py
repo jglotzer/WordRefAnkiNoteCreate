@@ -137,8 +137,7 @@ def main():
        json_string = json1 + front_str + json2 + back_str + json3
        #print(json_string)
        result = invoke_json(json_string)
-       print('Created a new Anki card: {}'.format(result))
-       print('\n')
+       print('Created a new Anki card: {}\n'.format(result))
 
 if __name__ == '__main__':
     main()
