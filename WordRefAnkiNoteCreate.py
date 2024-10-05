@@ -127,12 +127,12 @@ def main():
     if args.connect:
        tmp_front_str = gen_examples_for_connect(args.word, translations)
        front_str = f"<pre><b>{args.word}</b></font><br><br>" + tmp_front_str + "</pre>"
-       # Replace double quotes with single quotes to protect JSON
-       front_str = front_str.replace('"', "'")
+       # Encode double quotes to protect JSON
+       front_str = front_str.replace('"', "&quot;")
        #print(front_str)
        back_str = gen_translations_for_connect(args.word, translations)
-       # Replace double quotes with single quotes to protect JSON
-       back_str = back_str.replace('"', "'")
+       # Encode double quotes to protect JSON
+       back_str = back_str.replace('"', "&quot;")
        #print(back_str)
        json_string = json1 + front_str + json2 + back_str + json3
        #print(json_string)
