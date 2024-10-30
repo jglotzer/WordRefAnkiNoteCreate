@@ -71,23 +71,23 @@ def gen_translations_for_connect(word, translations):
     return return_str[:-4] + "</pre>" # get rid of last <br>, close tag.
 
 # Print examples to the terminal in an Anki Card specific way.
-def print_examples(translations):
+def print_examples(translations, invert):
     print('\033[3m', end='')
     for value in translations.values():
         for examples_list in value["examples"]:
             for example in range(len(examples_list)):
-                if not example: # Only want French examples, not their English translations.
+                if (not example and not invert) or (example and invert): # Only want French examples, not their English translations.
                     print("\033[93m"  + examples_list[example])
     print('\033[0m', end='')
 
 # Gen the HTML code for the examples that will go on front of created card.
-def gen_examples_for_connect(word, translations):
+def gen_examples_for_connect(word, translations, invert):
     return_str=f"<i><font color={yellow}>"
     num_examples = 0
     for value in translations.values():
         for examples_list in value["examples"]:
             for example in range(len(examples_list)):
-                if not example: # Only want French examples, not their English translations.
+                if (not example and not invert) or (example and invert): # Only want French examples, not their English translations.
                     return_str += f"{examples_list[example]}<br>"
                     num_examples += 1
     if num_examples > 0:
@@ -98,6 +98,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="get translation and/or make Anki Card using wordreference.com ")
     parser.add_argument("dictionary_code", help = "dictionary code", choices = ["enar","enzh","encz","ennl","enfr","ende","engr","enis","enit","enja","enko","enpl","enpt","enro","enru","enes","ensv","entr","aren","czen","deen","dees","esde","esen","esfr","esit","espt","fren","fres","gren","isen","iten","ites","jaen","koen","nlen","plen","pten","ptes","roen","ruen","sven","tren","zhen"], metavar ="DICTIONARY_CODE")
     parser.add_argument("-c", "--connect", help = "create an Anki Card as well", action='store_true')
+    parser.add_argument("-i", "--invert", help = "invert in other direction", action='store_true')
     parser.add_argument("word", help = "word to translate or to make Anki Card")
     args = parser.parse_args()
     return args
@@ -113,19 +114,20 @@ def parse_arguments():
 # options:
 #   -h, --help       show this help message and exit
 #   -c, --connect    create an Anki Card as well
+#   -i, --invert     invert direction
 def main():
     args = parse_arguments()
     # Get translations data from wordreference module.
     translations,audio_links = wr.define_word(args.word, args.dictionary_code)
     print('\n')
     # Always print retrieved data.
-    print_examples(translations)
+    print_examples(translations, args.invert)
     print('\n')
     print_translations(translations)
     print('\n')
     # If connect argument is given also generate a card using Anki Connect.
     if args.connect:
-       tmp_front_str = gen_examples_for_connect(args.word, translations)
+       tmp_front_str = gen_examples_for_connect(args.word, translations, args.invert)
        front_str = f"<pre><b>{args.word}</b></font><br><br>" + tmp_front_str + "</pre>"
        # Encode double quotes to protect JSON
        front_str = front_str.replace('"', "&quot;")
