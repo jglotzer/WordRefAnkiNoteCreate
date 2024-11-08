@@ -96,10 +96,10 @@ def gen_examples_for_connect(word, translations, invert):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="get translation and/or make Anki Card using wordreference.com ")
-    parser.add_argument("dictionary_code", help = "dictionary code", choices = ["enar","enzh","encz","ennl","enfr","ende","engr","enis","enit","enja","enko","enpl","enpt","enro","enru","enes","ensv","entr","aren","czen","deen","dees","esde","esen","esfr","esit","espt","fren","fres","gren","isen","iten","ites","jaen","koen","nlen","plen","pten","ptes","roen","ruen","sven","tren","zhen"], metavar ="DICTIONARY_CODE")
-    parser.add_argument("-c", "--connect", help = "create an Anki Card as well", action='store_true')
-    parser.add_argument("-i", "--invert", help = "invert in other direction", action='store_true')
-    parser.add_argument("word", help = "word to translate or to make Anki Card")
+    parser.add_argument("dictionary_code", help="dictionary code", choices=["enar","enzh","encz","ennl","enfr","ende","engr","enis","enit","enja","enko","enpl","enpt","enro","enru","enes","ensv","entr","aren","czen","deen","dees","esde","esen","esfr","esit","espt","fren","fres","gren","isen","iten","ites","jaen","koen","nlen","plen","pten","ptes","roen","ruen","sven","tren","zhen"], metavar ="DICTIONARY_CODE")
+    parser.add_argument("-c", "--connect", help="create an Anki Card as well", action='store_true')
+    parser.add_argument("-i", "--invert",  help="invert in other direction", action='store_true')
+    parser.add_argument("word", nargs='+',  help = "word (with optional article) to translate or to make Anki Card")
     args = parser.parse_args()
     return args
 
@@ -109,7 +109,7 @@ def parse_arguments():
 
 # positional arguments:
 #   DICTIONARY_CODE  dictionary code
-#   word             word to translate or to make Anki Card
+#   word             word or words (if > 1, 1st considered as an article which is not part of lookup) to translate or to make Anki Card
 
 # options:
 #   -h, --help       show this help message and exit
@@ -117,8 +117,19 @@ def parse_arguments():
 #   -i, --invert     invert direction
 def main():
     args = parse_arguments()
+    # If more than one token in words consider the first to be an article which is not part of lookup.
+    # If only one token in words then defined article as the empty string.
+    article=""
+    # Case of optional argument e.g. la maison
+    if len(args.word) > 1:
+        article = args.word[0] + " "
+        word = args.word[1]
+    # case of no optional argument e.g. aller
+    else:
+        word = args.word[0]
+
     # Get translations data from wordreference module.
-    translations,audio_links = wr.define_word(args.word, args.dictionary_code)
+    translations,audio_links = wr.define_word(word, args.dictionary_code)
     print('\n')
     # Always print retrieved data.
     print_examples(translations, args.invert)
@@ -127,17 +138,14 @@ def main():
     print('\n')
     # If connect argument is given also generate a card using Anki Connect.
     if args.connect:
-       tmp_front_str = gen_examples_for_connect(args.word, translations, args.invert)
-       front_str = f"<pre><b>{args.word}</b></font><br><br>" + tmp_front_str + "</pre>"
+       tmp_front_str = gen_examples_for_connect(word, translations, args.invert)
+       front_str = f"<pre><b>{article}{word}</b></font><br><br>" + tmp_front_str + "</pre>"
        # Encode double quotes to protect JSON
        front_str = front_str.replace('"', "&quot;")
-       #print(front_str)
-       back_str = gen_translations_for_connect(args.word, translations)
+       back_str = gen_translations_for_connect(word, translations)
        # Encode double quotes to protect JSON
        back_str = back_str.replace('"', "&quot;")
-       #print(back_str)
        json_string = json1 + front_str + json2 + back_str + json3
-       #print(json_string)
        result = invoke_json(json_string)
        print('Created a new Anki card: {}\n'.format(result))
 

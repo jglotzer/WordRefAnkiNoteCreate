@@ -15,7 +15,7 @@ Console output and Anki Note created with the -c switch.
 
 positional arguments:
   DICTIONARY_CODE  dictionary code
-  word             word to translate for Anki Note
+  word             word or words (if > 1, 1st considered as an article which is not part of lookup) to translate or to make Anki Card
 
 options:
   -h, --help       show this help message and exit
