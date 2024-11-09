@@ -53,15 +53,15 @@ def invoke_json(requestJsonString):
     return response['result']
 
 # Print translations to the terminal in an Anki Card specific way.
-def print_translations(translations, colors=""):
+def print_translations(translations):
     for value in translations.values():
-        print ("\033[92m" + value['word'] + "\033[00m" )
+        print ("\033[92m" + value['word'] + "\033[00m")
         for meaning in value["meanings"]:
             print("\033[96m" + meaning + "\033[00m", end=' ')
         print ("\033[95m",   value['definition'])
 
 # Gen the HTML code for the translations that will go on back of created card.
-def gen_translations_for_connect(word, translations):
+def gen_translations_for_connect(translations):
     return_str = "<pre>"
     for value in translations.values():
         return_str += f"<font color={cyan}>"
@@ -81,7 +81,7 @@ def print_examples(translations, invert):
     print('\033[0m', end='')
 
 # Gen the HTML code for the examples that will go on front of created card.
-def gen_examples_for_connect(word, translations, invert):
+def gen_examples_for_connect(translations, invert):
     return_str=f"<i><font color={yellow}>"
     num_examples = 0
     for value in translations.values():
@@ -129,7 +129,7 @@ def main():
         word = args.word[0]
 
     # Get translations data from wordreference module.
-    translations,audio_links = wr.define_word(word, args.dictionary_code)
+    translations, *_  = wr.define_word(word, args.dictionary_code)
     print('\n')
     # Always print retrieved data.
     print_examples(translations, args.invert)
@@ -138,11 +138,11 @@ def main():
     print('\n')
     # If connect argument is given also generate a card using Anki Connect.
     if args.connect:
-       tmp_front_str = gen_examples_for_connect(word, translations, args.invert)
+       tmp_front_str = gen_examples_for_connect(translations, args.invert)
        front_str = f"<pre><b>{article}{word}</b></font><br><br>" + tmp_front_str + "</pre>"
        # Encode double quotes to protect JSON
        front_str = front_str.replace('"', "&quot;")
-       back_str = gen_translations_for_connect(word, translations)
+       back_str = gen_translations_for_connect(translations)
        # Encode double quotes to protect JSON
        back_str = back_str.replace('"', "&quot;")
        json_string = json1 + front_str + json2 + back_str + json3
