@@ -15,7 +15,7 @@ import urllib.request
 #     "action": "addNote",
 #     "version": 6,
 #     "params": {
-#         "notes":
+#         "note":
 #             {
 #                 "deckName": "French",
 #                 "modelName": "Basic",
