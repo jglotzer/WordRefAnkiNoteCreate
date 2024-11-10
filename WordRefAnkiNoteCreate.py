@@ -10,8 +10,9 @@ import argparse
 import json
 import urllib.request
 
+# Desired JSON to be sent to AnkiConnect (see Home page for AnkiConnect)
 # {
-#     "action": "addNotes",
+#     "action": "addNote",
 #     "version": 6,
 #     "params": {
 #         "notes":
@@ -25,12 +26,25 @@ import urllib.request
 #                 }
 #             }
 #  }
-# JSON fragments needed to construct above JSON string to send to Anki Connect to add a note.
 # NB: more complex options are possible, see AnkiConnect Home page.
 # NB: deckName is hardcoded here - change according to preference.
-json1 = '{ "action": "addNote", "version": 6, "params": { "note": { "deckName": "French", "modelName": "Basic", "fields": { "Front": "'
-json2 = '", "Back": "'
-json3 = '"} }}}'
+
+json_format_str = '{\
+                    "action": "addNote",\
+                    "version": 6,\
+                    "params": {\
+                        "note":\
+                           {\
+                               "deckName": "French",\
+                               "modelName": "Basic",\
+                               "fields": {\
+                                   "Front": "front content",\
+                                   "Back":  "back content"\
+                                }\
+                      }\
+            }\
+  }'
+
 
 # These colors correspond to the Terminal Color commands after a cut and paste from Terminal using "Copy HTML" command.
 yellow = '#FCE94F'
@@ -145,7 +159,10 @@ def main():
        back_str = gen_translations_for_connect(translations)
        # Encode double quotes to protect JSON
        back_str = back_str.replace('"', "&quot;")
-       json_string = json1 + front_str + json2 + back_str + json3
+       data = json.loads(json_format_str)
+       data['params']['note']['fields']['Front'] = front_str
+       data['params']['note']['fields']['Back'] = back_str
+       json_string = json.dumps(data, ensure_ascii=False) # Don't want to escape non-ASCII chars
        result = invoke_json(json_string)
        print('Created a new Anki card: {}\n'.format(result))
 
