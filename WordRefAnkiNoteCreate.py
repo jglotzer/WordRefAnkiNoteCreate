@@ -10,7 +10,7 @@ import argparse
 import json
 import urllib.request
 
-# Desired JSON to be sent to AnkiConnect (see Home page for AnkiConnect)
+# Desired JSON to be sent to AnkiConnect (see home page for AnkiConnect)
 # {
 #     "action": "addNote",
 #     "version": 6,
@@ -47,7 +47,7 @@ json_format_str = '{\
 
 # These colors correspond to the Terminal Color commands after a cut and paste from Terminal using "Copy HTML" command.
 yellow = '#FCE94F'
-cyan = '#34E2E2'
+cyan =   '#34E2E2'
 purple = '#AD7FA8'
 
 # Use a passed in Json String to send an addNote command to the Anki Connect server.
@@ -116,13 +116,14 @@ def parse_arguments():
     args = parser.parse_args()
     return args
 
-# usage: WordReferenceAnkiNoteCreate.py [-h] [-c] DICTIONARY_CODE word
+# usage: WordReferenceAnkiNoteCreate.py [-h] [-c] DICTIONARY_CODE [article] word
 
 # get translation and/or make Anki Card using wordreference.com
 
 # positional arguments:
 #   DICTIONARY_CODE  dictionary code
-#   word             word or words (if > 1, 1st considered as an article which is not part of lookup) to translate or to make Anki Card
+#   article          optional article (e.g. le, la, un, une) not used in lookup but used to create card
+#   word             word to translate or to make Anki Card
 
 # options:
 #   -h, --help       show this help message and exit
@@ -131,7 +132,7 @@ def parse_arguments():
 def main():
     args = parse_arguments()
     # If more than one token in words consider the first to be an article which is not part of lookup.
-    # If only one token in words then defined article as the empty string.
+    # If only one token in words then article is the empty string.
     article=""
     # Case of optional argument e.g. la maison
     if len(args.word) > 1:
