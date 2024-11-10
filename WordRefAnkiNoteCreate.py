@@ -45,7 +45,6 @@ json_format_str = '{\
             }\
   }'
 
-
 # These colors correspond to the Terminal Color commands after a cut and paste from Terminal using "Copy HTML" command.
 yellow = '#FCE94F'
 cyan = '#34E2E2'
