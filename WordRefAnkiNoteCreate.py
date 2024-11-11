@@ -45,10 +45,19 @@ json_format_str = '{\
             }\
   }'
 
-# These colors correspond to the Terminal Color commands after a cut and paste from Terminal using "Copy HTML" command.
-yellow = '#FCE94F'
-cyan =   '#34E2E2'
-purple = '#AD7FA8'
+# HTML color codes that exactly match the Ascii Terminal codes.
+yellow  = '#FCE94F'
+cyan    = '#34E2E2'
+magenta = '#AD7FA8'
+
+# Python escape codes for controlling the terminal when printing.
+# Colors are prefixed with 'b' to indicate "bright".
+terminal_reset = '\033[00m'
+italic         = '\033[03m'
+bgreen         = '\033[92m'
+byellow        = '\033[93m'
+bmagenta       = '\033[95m'
+bcyan          = '\033[96m'
 
 # Use a passed in Json String to send an addNote command to the Anki Connect server.
 # Code modified from that on AnkiConnect website.
@@ -68,10 +77,12 @@ def invoke_json(requestJsonString):
 # Print translations to the terminal in an Anki Card specific way.
 def print_translations(translations):
     for value in translations.values():
-        print ("\033[92m" + value['word'] + "\033[00m")
+        print (bgreen + value['word'] + terminal_reset)
+        # Can have multiple English meanings.
         for meaning in value["meanings"]:
-            print("\033[96m" + meaning + "\033[00m", end=' ')
-        print ("\033[95m",  value['definition'])
+            print(bcyan + meaning + terminal_reset, end=' ')
+        # For a single French definition.
+        print (bmagenta,  value['definition'])
     print()
 
 # Gen the HTML code for the translations that will go on back of created card.
@@ -79,20 +90,22 @@ def gen_translations_for_connect(translations):
     return_str = "<pre>"
     for value in translations.values():
         return_str += f"<font color={cyan}>"
+        # Can have multiple English meanings.
         for meaning in value["meanings"]:
             return_str += f"{meaning} " # meaning is English Meaning.
-        return_str += f"</font> &nbsp;&nbsp; <font color={purple}>{value['definition']}</font><br>" #definition is French definition.
+        # For a single French definition.
+        return_str += f"</font> &nbsp;&nbsp; <font color={magenta}>{value['definition']}</font><br>" #definition is French definition.
     return return_str[:-4] + "</pre>" # get rid of last <br>, close tag.
 
 # Print examples to the terminal in an Anki Card specific way.
 def print_examples(translations, invert):
-    print('\033[3m', end='')
+    print(italic, end='')
     for value in translations.values():
         for examples_list in value["examples"]:
             for example in range(len(examples_list)):
                 if (not example and not invert) or (example and invert): # Only want French examples, not their English translations.
-                    print("\033[93m"  + examples_list[example])
-    print('\033[0m')
+                    print(byellow  + examples_list[example])
+    print(terminal_reset)
 
 # Gen the HTML code for the examples that will go on front of created card.
 def gen_examples_for_connect(translations, invert):
