@@ -99,7 +99,7 @@ def gen_translations_for_connect(translations):
 
 # Print examples to the terminal in an Anki Card specific way.
 def print_examples(translations, invert):
-    print(italic, end='')
+    print(italic)
     for value in translations.values():
         for examples_list in value["examples"]:
             for example in range(len(examples_list)):
@@ -160,10 +160,11 @@ def main():
 
     # Get translations data from wordreference module.
     translations, *_  = wr.define_word(word, dictionary_code)
-    print('\n')
+
     # Always print retrieved data.
     print_examples(translations, invert)
     print_translations(translations)
+
     # If connect argument is given also generate a card using Anki Connect.
     if args.connect:
        tmp_front_str = gen_examples_for_connect(translations, invert)
