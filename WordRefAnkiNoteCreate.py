@@ -158,6 +158,7 @@ def main():
         word = args.word[0]
     invert = args.invert
     dictionary_code = args.dictionary_code
+    connect = args.connect
 
     # Get translations data from wordreference module.
     translations, *_  = wr.define_word(word, dictionary_code)
@@ -167,7 +168,7 @@ def main():
     print_translations(translations)
 
     # If connect argument is given also generate a card using Anki Connect.
-    if args.connect:
+    if connect:
        tmp_front_str = gen_examples_for_connect(translations, invert)
        front_str = f"<pre><b>{article}{word}</b></font><br><br>" + tmp_front_str + "</pre>"
        # Encode double quotes to protect JSON
