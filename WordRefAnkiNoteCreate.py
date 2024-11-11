@@ -28,6 +28,7 @@ import urllib.request
 #  }
 # NB: more complex options are possible, see AnkiConnect Home page.
 # NB: deckName is hardcoded here - change according to preference.
+# NB: modelName is hardcoded here - change according to preference.
 
 json_format_str = '{\
                     "action": "addNote",\
