@@ -164,7 +164,7 @@ def main():
        data['params']['note']['fields']['Back'] = back_str
        json_string = json.dumps(data, ensure_ascii=False) # Don't want to escape non-ASCII chars
        result = invoke_json(json_string)
-       print('Created a new Anki card: {}\n'.format(result))
+       print('Created a new Anki Note with ID:{}\n'.format(result))
 
 if __name__ == '__main__':
     main()
