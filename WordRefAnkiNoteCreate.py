@@ -71,7 +71,8 @@ def print_translations(translations):
         print ("\033[92m" + value['word'] + "\033[00m")
         for meaning in value["meanings"]:
             print("\033[96m" + meaning + "\033[00m", end=' ')
-        print ("\033[95m",   value['definition'])
+        print ("\033[95m",  value['definition'])
+    print()
 
 # Gen the HTML code for the translations that will go on back of created card.
 def gen_translations_for_connect(translations):
@@ -91,7 +92,7 @@ def print_examples(translations, invert):
             for example in range(len(examples_list)):
                 if (not example and not invert) or (example and invert): # Only want French examples, not their English translations.
                     print("\033[93m"  + examples_list[example])
-    print('\033[0m', end='')
+    print('\033[0m')
 
 # Gen the HTML code for the examples that will go on front of created card.
 def gen_examples_for_connect(translations, invert):
@@ -149,9 +150,7 @@ def main():
     print('\n')
     # Always print retrieved data.
     print_examples(translations, invert)
-    print('\n')
     print_translations(translations)
-    print('\n')
     # If connect argument is given also generate a card using Anki Connect.
     if args.connect:
        tmp_front_str = gen_examples_for_connect(translations, invert)
