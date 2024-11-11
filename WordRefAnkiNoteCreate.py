@@ -141,18 +141,20 @@ def main():
     # case of no optional argument e.g. aller
     else:
         word = args.word[0]
+    invert = args.invert
+    dictionary_code = args.dictionary_code
 
     # Get translations data from wordreference module.
-    translations, *_  = wr.define_word(word, args.dictionary_code)
+    translations, *_  = wr.define_word(word, dictionary_code)
     print('\n')
     # Always print retrieved data.
-    print_examples(translations, args.invert)
+    print_examples(translations, invert)
     print('\n')
     print_translations(translations)
     print('\n')
     # If connect argument is given also generate a card using Anki Connect.
     if args.connect:
-       tmp_front_str = gen_examples_for_connect(translations, args.invert)
+       tmp_front_str = gen_examples_for_connect(translations, invert)
        front_str = f"<pre><b>{article}{word}</b></font><br><br>" + tmp_front_str + "</pre>"
        # Encode double quotes to protect JSON
        front_str = front_str.replace('"', "&quot;")
