@@ -83,7 +83,7 @@ def print_translations(translations):
             print(bcyan + meaning + terminal_reset, end=' ')
         # For a single French definition.
         print (bmagenta,  value['definition'])
-    print()
+    print(terminal_reset)
 
 # Gen the HTML code for the translations that will go on back of created card.
 def gen_translations_for_connect(translations):
