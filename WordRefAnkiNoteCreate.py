@@ -18,7 +18,7 @@ import urllib.request
 #         "note":
 #             {
 #                 "deckName": "French",
-#                 "modelName": "Basic",
+#                 "modelName": "Basic (and reversed card)",
 #                 "fields": {
 #                     "Front": "front content",
 #                     "Back": "back content"
@@ -36,7 +36,7 @@ json_format_str = '{\
                         "note":\
                            {\
                                "deckName": "French",\
-                               "modelName": "Basic",\
+                               "modelName": "Basic (and reversed card)",\
                                "fields": {\
                                    "Front": "front content",\
                                    "Back":  "back content"\
