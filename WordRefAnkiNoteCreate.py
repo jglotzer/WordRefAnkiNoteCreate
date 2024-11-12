@@ -62,7 +62,7 @@ bcyan          = '\033[96m'
 
 # Use a passed in Json String to send an addNote command to the Anki Connect server.
 # Code modified from that on AnkiConnect website.
-def invoke_json(requestJsonString):
+def send_json_request(requestJsonString):
     encodedJsonString = requestJsonString.encode('utf-8')
     response = json.load(urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:8765', encodedJsonString)))
     if len(response) != 2:
@@ -180,7 +180,7 @@ def main():
        data['params']['note']['fields']['Front'] = front_str
        data['params']['note']['fields']['Back'] = back_str
        json_string = json.dumps(data, ensure_ascii=False) # Don't want to escape non-ASCII chars
-       result = invoke_json(json_string)
+       result = send_json_request(json_string)
        print('Created a new Anki Note with ID:{}\n'.format(result))
 
 if __name__ == '__main__':
