@@ -87,16 +87,21 @@ def print_translations(translations):
     print(terminal_reset)
 
 # Gen the HTML code for the translations that will go on back of created card.
-def gen_translations_for_connect(translations):
+def gen_translations_for_connect(translations, invert):
     return_str = "<pre>"
+    num_french_definitions = 0
     for value in translations.values():
         return_str += f"<font color={cyan}>"
         # Can have multiple English meanings.
         for meaning in value["meanings"]:
             return_str += f"{meaning} " # meaning is English Meaning.
-        # For a single French definition.
-        return_str += f"</font> &nbsp;&nbsp; <font color={magenta}>{value['definition']}</font><br>" #definition is French definition.
-    return return_str[:-4] + "</pre>" # get rid of last <br>, close tag.
+        # For a single French definition (if not inverted, if inverted definition is in English which don't want.)
+        if not invert:
+           return_str += f"</font> &nbsp;&nbsp; <font color={magenta}>{value['definition']}</font><br>" #definition is French definition.
+           num_french_definitions += 1
+    if num_french_definitions > 0:
+        return_str = return_str[:-4] # get rid of last <br> tag if at least 1 french definition.
+    return return_str + "</pre>" #  close tag.
 
 # Print examples to the terminal in an Anki Card specific way.
 def print_examples(translations, invert):
@@ -173,7 +178,7 @@ def main():
        front_str = f"<pre><b>{article}{word}</b></font><br><br>" + tmp_front_str + "</pre>"
        # Encode double quotes to protect JSON
        front_str = front_str.replace('"', "&quot;")
-       back_str = gen_translations_for_connect(translations)
+       back_str = gen_translations_for_connect(translations, invert)
        # Encode double quotes to protect JSON
        back_str = back_str.replace('"', "&quot;")
        data = json.loads(json_format_str)
