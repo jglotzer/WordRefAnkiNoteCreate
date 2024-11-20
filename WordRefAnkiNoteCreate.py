@@ -108,9 +108,12 @@ def print_examples(translations, invert):
     print(italic)
     for value in translations.values():
         for examples_list in value["examples"]:
-            for example in range(len(examples_list)):
-                if (not example and not invert) or (example and invert): # Only want French examples, not their English translations.
-                    print(byellow  + examples_list[example])
+            for example_index in range(len(examples_list)):
+                # Only want French examples, not English translations.
+                # This means example_index of 0 in non invert case.
+                # or example_index non-zero in invert case.
+                if (not example_index and not invert) or (example_index and invert):
+                    print(byellow  + examples_list[example_index])
     print(terminal_reset)
 
 # Gen the HTML code for the examples that will go on front of created card.
