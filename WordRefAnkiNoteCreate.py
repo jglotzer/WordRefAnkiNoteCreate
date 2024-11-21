@@ -89,19 +89,16 @@ def print_translations(translations):
 # Gen the HTML code for the translations that will go on back of created card.
 def gen_translations_for_connect(translations, invert):
     return_str = "<pre>"
-    num_french_definitions = 0
     for value in translations.values():
         return_str += f"<font color={cyan}>"
         # Can have multiple English meanings.
         for meaning in value["meanings"]:
             return_str += f"{meaning} " # meaning is English Meaning.
+        return_str = return_str.rstrip()
         # For a single French definition (if not inverted, if inverted definition is in English which don't want.)
         if not invert:
-           return_str += f"</font> &nbsp;&nbsp; <font color={magenta}>{value['definition']}</font><br>" #definition is French definition.
-           num_french_definitions += 1
-    if num_french_definitions > 0:
-        return_str = return_str[:-4] # get rid of last <br> tag if at least 1 french definition.
-    return return_str + "</pre>" #  close tag.
+           return_str += f"</font>    <font color={magenta}>{value['definition']}</font>\n" #definition is French definition.
+    return return_str.rstrip() + "</pre>" #  close tag.
 
 # Print examples to the terminal in an Anki Card specific way.
 def print_examples(translations, invert):
@@ -119,15 +116,11 @@ def print_examples(translations, invert):
 # Gen the HTML code for the examples that will go on front of created card.
 def gen_examples_for_connect(translations, invert):
     return_str=f"<i><font color={yellow}>"
-    num_examples = 0
     for value in translations.values():
         for examples_list in value["examples"]:
             for example in range(len(examples_list)):
                 if (not example and not invert) or (example and invert): # Only want French examples, not their English translations.
-                    return_str += f"{examples_list[example]}<br>"
-                    num_examples += 1
-    if num_examples > 0:
-        return_str = return_str[:-4] # get rid of last <br> tag if at least 1 example.
+                    return_str += f"{examples_list[example]}\n"
     return return_str + "</font></i>" # close tags.
 
 def parse_arguments():
