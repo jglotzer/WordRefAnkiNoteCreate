@@ -98,7 +98,9 @@ def gen_translations_for_connect(translations, invert):
         # For a single French definition (if not inverted, if inverted definition is in English which don't want.)
         if not invert:
            return_str += f"</font>    <font color={magenta}>{value['definition']}</font>\n" #definition is French definition.
-    return return_str.rstrip() + "</pre>" #  close tag.
+    return_str = return_str.rstrip() + "</pre>" #  close tag.
+    return_str = return_str.replace('"', "&quot;") # Protect JSON from double quotes by encoding them.
+    return return_str
 
 # Print examples to the terminal in an Anki Card specific way.
 def print_examples(translations, invert):
@@ -121,7 +123,9 @@ def gen_examples_for_connect(translations, invert):
             for example in range(len(examples_list)):
                 if (not example and not invert) or (example and invert): # Only want French examples, not their English translations.
                     return_str += f"{examples_list[example]}\n"
-    return return_str + "</font></i>" # close tags.
+    return_str += "</font></i>" # close tags.
+    return_str = return_str.replace('"', "&quot;") # Protect JSON from double quotes by encoding them.
+    return return_str
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="get translation and/or make Anki Card using wordreference.com ")
@@ -170,13 +174,9 @@ def main():
 
     # If connect argument is given also generate a card using Anki Connect.
     if connect:
-       tmp_front_str = gen_examples_for_connect(translations, invert)
-       front_str = f"<pre><b>{article}{word}</b></font><br><br>" + tmp_front_str + "</pre>"
-       # Encode double quotes to protect JSON
-       front_str = front_str.replace('"', "&quot;")
+       #tmp_front_str = gen_examples_for_connect(translations, invert)
+       front_str = f"<pre><b>{article}{word}</b></font><br><br>" + gen_examples_for_connect(translations, invert) + "</pre>"
        back_str = gen_translations_for_connect(translations, invert)
-       # Encode double quotes to protect JSON
-       back_str = back_str.replace('"', "&quot;")
        data = json.loads(json_format_str)
        data['params']['note']['fields']['Front'] = front_str
        data['params']['note']['fields']['Back'] = back_str
