@@ -88,7 +88,7 @@ def print_translations(translations):
 
 # Gen the HTML code for the translations that will go on back of created card.
 def gen_translations_for_connect(translations, invert):
-    return_str = "<pre>"
+    return_str = "<pre> \n"
     for value in translations.values():
         return_str += f"<font color={cyan}>"
         # Can have multiple English meanings.
@@ -117,7 +117,7 @@ def print_examples(translations, invert):
 
 # Gen the HTML code for the examples that will go on front of created card.
 def gen_examples_for_connect(translations, invert):
-    return_str=f"<i><font color={yellow}>"
+    return_str=f"<i><font color={yellow}>\n"
     for value in translations.values():
         for examples_list in value["examples"]:
             for example in range(len(examples_list)):
@@ -175,7 +175,7 @@ def main():
     # If connect argument is given also generate a card using Anki Connect.
     if connect:
        #tmp_front_str = gen_examples_for_connect(translations, invert)
-       front_str = f"<pre><b>{article}{word}</b></font><br><br>" + gen_examples_for_connect(translations, invert) + "</pre>"
+       front_str = f"<pre><b>{article}{word}</b></font>\n" + gen_examples_for_connect(translations, invert) + "</pre>"
        back_str = gen_translations_for_connect(translations, invert)
        data = json.loads(json_format_str)
        data['params']['note']['fields']['Front'] = front_str
