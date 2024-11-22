@@ -79,25 +79,24 @@ def send_json_request(requestJsonString):
 def print_translations(translations):
     for value in translations.values():
         print (bgreen + value['word'] + terminal_reset)
-        # Can have multiple English meanings.
+        # A supplied word can have multiple meanings.
         for meaning in value["meanings"]:
             print(bcyan + meaning + terminal_reset, end=' ')
-        # For a single French definition.
+        # Each of those meanings will have a single definition.
         print (bmagenta,  value['definition'])
     print(terminal_reset)
 
 # Gen the HTML code for the translations that will go on back of created card.
-def gen_translations_for_connect(translations, invert):
+def gen_translations_for_connect(translations):
     return_str = "<pre> \n"
     for value in translations.values():
         return_str += f"<font color={cyan}>"
-        # Can have multiple English meanings.
+        # A supplied word can have multiple meanings.
         for meaning in value["meanings"]:
             return_str += f"{meaning} " # meaning is English Meaning.
         return_str = return_str.rstrip()
-        # For a single French definition (if not inverted, if inverted definition is in English which don't want.)
-        if not invert:
-           return_str += f"</font>    <font color={magenta}>{value['definition']}</font>\n" #definition is French definition.
+        # Each of those meanings will have a single definition.
+        return_str += f"</font>    <font color={magenta}>{value['definition']}</font>\n"
     return_str = return_str.rstrip() + "</pre>" #  close tag.
     return_str = return_str.replace('"', "&quot;") # Protect JSON from double quotes by encoding them.
     return return_str
@@ -176,7 +175,7 @@ def main():
     if connect:
        #tmp_front_str = gen_examples_for_connect(translations, invert)
        front_str = f"<pre><b>{article}{word}</b></font>\n" + gen_examples_for_connect(translations, invert) + "</pre>"
-       back_str = gen_translations_for_connect(translations, invert)
+       back_str = gen_translations_for_connect(translations)
        data = json.loads(json_format_str)
        data['params']['note']['fields']['Front'] = front_str
        data['params']['note']['fields']['Back'] = back_str
