@@ -119,9 +119,12 @@ def gen_examples_for_connect(translations, invert):
     return_str=f"<i><font color={yellow}>\n"
     for value in translations.values():
         for examples_list in value["examples"]:
-            for example in range(len(examples_list)):
-                if (not example and not invert) or (example and invert): # Only want French examples, not their English translations.
-                    return_str += f"{examples_list[example]}\n"
+            for example_index in range(len(examples_list)):
+                # Only want French examples, not English translations.
+                # This means example_index of 0 in non invert case.
+                # or example_index non-zero in invert case.
+                if (not example_index and not invert) or (example_index and invert):
+                    return_str += f"{examples_list[example_index]}\n"
     return_str += "</font></i>" # close tags.
     return_str = return_str.replace('"', "&quot;") # Protect JSON from double quotes by encoding them.
     return return_str
