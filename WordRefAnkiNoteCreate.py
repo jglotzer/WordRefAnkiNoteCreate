@@ -97,7 +97,7 @@ def gen_translations_for_connect(translations):
         return_str = return_str.rstrip()
         # Each of those meanings will have a single definition.
         return_str += f"</font>    <font color={magenta}>{value['definition']}</font>\n"
-    return_str = return_str.rstrip() + "</pre>" #  close tag.
+    return_str = return_str + "\n\n </pre>" # add space for pics and close tag.
     return_str = return_str.replace('"', "&quot;") # Protect JSON from double quotes by encoding them.
     return return_str
 
@@ -173,8 +173,8 @@ def main():
 
     # If connect argument is given also generate a card using Anki Connect.
     if connect:
-       #tmp_front_str = gen_examples_for_connect(translations, invert)
-       front_str = f"<pre><b>{article}{word}</b></font>\n" + gen_examples_for_connect(translations, invert) + "</pre>"
+       # Format the supplied word, add examples, leave space for pics, close <pre> tag.
+       front_str = f"<pre><b>{article}{word}</b></font>\n" + gen_examples_for_connect(translations, invert) + "\n\n </pre>"
        back_str = gen_translations_for_connect(translations)
        data = json.loads(json_format_str)
        data['params']['note']['fields']['Front'] = front_str
