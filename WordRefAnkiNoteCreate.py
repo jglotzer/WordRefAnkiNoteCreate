@@ -97,7 +97,7 @@ def gen_translations_for_connect(translations):
         return_str = return_str.rstrip()
         # Each of those meanings will have a single definition.
         return_str += f"</font>    <font color={magenta}>{value['definition']}</font>\n"
-    return_str = return_str + "</pre><br><br>pics" # close tag and add space for pics.
+    return_str = return_str + "\n\n|</pre>" # close tag and add space for pics.
     return_str = return_str.replace('"', "&quot;") # Protect JSON from double quotes by encoding them.
     return return_str
 
