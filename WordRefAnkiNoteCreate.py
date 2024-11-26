@@ -98,8 +98,7 @@ def gen_translations_for_connect(translations):
         # Each of those meanings will have a single definition.
         return_str += f"</font>    <font color={magenta}>{value['definition']}</font>\n"
     return_str = return_str + "\n\n|</pre>" # close tag and add space for pics.
-    return_str = return_str.replace('"', "&quot;") # Protect JSON from double quotes by encoding them.
-    return return_str
+    return return_str.replace('"', "&quot;") # Protect JSON from double quotes by encoding them.
 
 # Print examples to the terminal in an Anki Card specific way.
 def print_examples(translations, invert):
@@ -126,8 +125,7 @@ def gen_examples_for_connect(translations, invert):
                 if (not example_index and not invert) or (example_index and invert):
                     return_str += f"{examples_list[example_index]}\n"
     return_str += "</font></i></pre>" # close tags.
-    return_str = return_str.replace('"', "&quot;") # Protect JSON from double quotes by encoding them.
-    return return_str
+    return return_str.replace('"', "&quot;") # Protect JSON from double quotes by encoding them.
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="get translation and/or make Anki Card using wordreference.com ")
