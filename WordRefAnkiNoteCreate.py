@@ -88,9 +88,12 @@ def print_translations(translations):
 
 # Gen the HTML code for the translations that will go on back of created card.
 def gen_translations_for_connect(translations):
-    return_str = "<pre>"
+    # This is a dilemma. Want the return character but not the space. But if I elminate the space
+    # programatically the newline doesn't have an effect. Best is to generate the space and
+    # then eliminate it manually.
+    return_str = "<pre> \n"
     for value in translations.values():
-        return_str += f"<font color={cyan}>\n"
+        return_str += f"<font color={cyan}>"
         # A supplied word can have multiple meanings.
         for meaning in value["meanings"]:
             return_str += f"{meaning} " # meaning is English Meaning.
@@ -115,7 +118,7 @@ def print_examples(translations, invert):
 
 # Gen the HTML code for the examples that will go on front of created card.
 def gen_examples_for_connect(translations, invert):
-    return_str=f"<i><font color={yellow}>\n"
+    return_str=f"<i><font color={yellow}><br>\n"
     for value in translations.values():
         for examples_list in value["examples"]:
             for example_index in range(len(examples_list)):
@@ -175,7 +178,7 @@ def main():
     # If connect argument is given also generate a card using Anki Connect.
     if connect:
        # Format the supplied word, add examples, leave space for pics, close <pre> tag.
-       front_str = f"<pre><b>{article}{word}</b></font>\n" + gen_examples_for_connect(translations, invert)
+       front_str = f"<pre><b>{article}{word}</b>" + gen_examples_for_connect(translations, invert)
        back_str = gen_translations_for_connect(translations)
        data = json.loads(json_format_str)
        data['params']['note']['fields']['Front'] = front_str
