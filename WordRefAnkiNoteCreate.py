@@ -88,9 +88,9 @@ def print_translations(translations):
 
 # Gen the HTML code for the translations that will go on back of created card.
 def gen_translations_for_connect(translations):
-    return_str = "<pre> \n"
+    return_str = "<pre>"
     for value in translations.values():
-        return_str += f"<font color={cyan}>"
+        return_str += f"<font color={cyan}>\n"
         # A supplied word can have multiple meanings.
         for meaning in value["meanings"]:
             return_str += f"{meaning} " # meaning is English Meaning.
