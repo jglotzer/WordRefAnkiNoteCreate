@@ -96,7 +96,11 @@ def gen_translations_for_connect(translations):
     # AnkiConnect or Anki itelf is removing the newline character after the <pre> tag
     # unless a space is inserted between those two elements. Human will come along after
     # and delete the unwanted space after the pre tag.
-    return_str = "<pre> \n"
+    #
+    # OK there's really no point in trying to get this right because Anke/QtWebEngine
+    # will change the HTML to match the DOM so will never be able to get to the desired
+    # end state.
+    return_str = "<pre>"
     for value in translations.values():
         return_str += f"<font color={cyan}>"
         # A supplied word can have multiple meanings.
