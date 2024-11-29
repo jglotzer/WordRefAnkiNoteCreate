@@ -88,18 +88,8 @@ def print_translations(translations):
 
 # Gen the HTML code for the translations that will go on back of created card.
 def gen_translations_for_connect(translations):
-    # A dilemma:
-    # Want the newline character but not the space. Elminating the space
-    # programatically causes the newline to have *no* effect. Instead, generate the space
-    # and eliminate it manually. Have demonstrated via wireshark that what gets sent to
-    # AnkiConnect is correct if space is eliminated. Only possible conclusion is that
-    # AnkiConnect or Anki itelf is removing the newline character after the <pre> tag
-    # unless a space is inserted between those two elements. Human will come along after
-    # and delete the unwanted space after the pre tag.
-    #
-    # OK there's really no point in trying to get this right because Anke/QtWebEngine
-    # will change the HTML to match the DOM so will never be able to get to the desired
-    # end state.
+    # Tried optimizing the HTML for maximum maintainability but can only do so much because
+    # Anki/QtWebEngine changes the HTML to match the DOM.
     return_str = "<pre>"
     for value in translations.values():
         return_str += f"<font color={cyan}>"
@@ -109,7 +99,7 @@ def gen_translations_for_connect(translations):
         return_str = return_str.rstrip()
         # Each of those meanings will have a single definition.
         return_str += f"</font>    <font color={magenta}>{value['definition']}</font>\n"
-    return_str = return_str + "\n\n\n</pre>" # add space for pics and close tag.
+    return_str = return_str + "\n\n\n</pre>" # Add space for pics and close tag.
     return return_str.replace('"', "&quot;") # Protect JSON from double quotes by encoding them.
 
 # Print examples to the terminal in an Anki Card specific way.
