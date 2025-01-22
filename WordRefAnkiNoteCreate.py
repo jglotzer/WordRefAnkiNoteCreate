@@ -91,7 +91,9 @@ def gen_translations_for_connect(translations):
     # Tried optimizing the HTML for maximum maintainability but can only do so much because
     # Anki/QtWebEngine changes the HTML to match the DOM.
     return_str = "<pre>"
+    none_found = True
     for value in translations.values():
+        none_found = False
         return_str += f"<font color={cyan}>"
         # A supplied word can have multiple meanings.
         for meaning in value["meanings"]:
@@ -99,7 +101,10 @@ def gen_translations_for_connect(translations):
         return_str = return_str.rstrip()
         # Each of those meanings will have a single definition.
         return_str += f"</font>    <font color={magenta}>{value['definition']}</font>\n"
-    return_str = return_str + "\n\n\n</pre>" # Add space for pics and close tag.
+    # If none found leave template for user to add their own.
+    if none_found:
+        return_str += f"<font color={cyan}>  </font>     <font color={magenta}>  </font>\n"
+    return_str += "\n\n\n</pre>" # Add space for pics and close tag.
     return return_str.replace('"', "&quot;") # Protect JSON from double quotes by encoding them.
 
 # Print examples to the terminal in an Anki Card specific way.
