@@ -109,7 +109,7 @@ def gen_translations_for_connect(translations):
 
 # Print examples to the terminal in an Anki Card specific way.
 def print_examples(translations, invert):
-    print(italic + byellow)
+    print(byellow)
     for value in translations.values():
         for examples_list in value["examples"]:
             for example_index in range(len(examples_list)):
