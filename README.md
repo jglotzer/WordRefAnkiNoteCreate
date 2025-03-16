@@ -36,7 +36,8 @@ options:
 * Anki running with AnkiConnect AddOn installed [AnkiConnect AddOn](https://foosoft.net/projects/anki-connect/)
 
 # User Changes Needed
-* Change name of Anki Deck to suit (currently set to French).
+* Change deck name of Anki Deck to suit (currently set to French).
+* Change model name of Note type to suit (current set to Basic and Reversed Card).
 * Supply desired 4 character dictionary code on command line.
  * to get list of codes run wordreference.py -l
 
