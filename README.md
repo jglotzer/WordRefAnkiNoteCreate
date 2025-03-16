@@ -1,9 +1,7 @@
 # WordRefAnkiNoteCreate
 A python command line utility for creating Anki Notes using wordreference.com, wordreference.py, Anki and the AnkiConnect AddOn.
-
-This used to be a tedious, manual process - what once took many minutes to create a note now done in seconds.
-
-Note: Code does **not** add photos, that is required to be done manually by the user.
+This used to be a tedious, manual process - what once took many minutes is now done in seconds.
+Note: Code does **not** add photos, that must be done manually by the user.
 
 # Usage
 ```text
@@ -11,15 +9,26 @@ usage: WordReferenceAnkiNoteCreate.py [-h] [-c] DICTIONARY_CODE word
 
 get translation and/or make Anki note using wordreference.com
 Console output only without the -c switch.
-Console output and Anki Note created with the -c switch.
+Console output *and* Anki Note created with the -c switch.
+
+Invert switch is intended to support use case where lookup word is in English but
+examples are still given in the foreign language.
+
+Numdefs switch is intended to help truncate the number of definitions returned
+often because WordReference throws in "extra" definitions.
+
+The word can have an optional article e.g. "un bateu" ou "bateau" will both look up
+the same word but if an article is supplied it will be displayed on the card.
 
 positional arguments:
-  DICTIONARY_CODE  dictionary code
-  word             word or words (if > 1, 1st considered as an article which is not part of lookup) to translate or to make Anki Card
+  DICTIONARY_CODE        dictionary code
+  word                   word (with optional article) to translate or to make Anki Card
 
 options:
-  -h, --help       show this help message and exit
-  -c, --connect    create an Anki Note as well
+  -h, --help             show this help message and exit
+  -c, --connect          create an Anki Card as well
+  -i, --invert           invert in other direction
+  -n, --numdefs NUMDEFS  number of defns wanted
 ```
 
 # Dependencies
