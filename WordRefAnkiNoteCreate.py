@@ -76,24 +76,29 @@ def send_json_request(requestJsonString):
     return response['result']
 
 # Print translations to the terminal in an Anki Card specific way.
-def print_translations(translations):
+def print_translations(translations, numdefs):
+    num_found = 0
     for value in translations.values():
+        if num_found >= numdefs:
+            break
         print (bgreen + value['word'] + terminal_reset)
         # A supplied word can have multiple meanings.
         for meaning in value["meanings"]:
             print(bcyan + meaning + terminal_reset, end=' ')
         # Each of those meanings will have a single definition.
         print (bmagenta,  value['definition'])
+        num_found += 1
     print(terminal_reset)
 
 # Gen the HTML code for the translations that will go on back of created card.
-def gen_translations_for_connect(translations):
+def gen_translations_for_connect(translations, numdefs):
     # Tried optimizing the HTML for maximum maintainability but can only do so much because
     # Anki/QtWebEngine changes the HTML to match the DOM.
     return_str = "<pre>"
-    none_found = True
+    num_found = 0
     for value in translations.values():
-        none_found = False
+        if num_found >= numdefs:
+            break
         return_str += f"<font color={cyan}>"
         # A supplied word can have multiple meanings.
         for meaning in value["meanings"]:
@@ -101,8 +106,9 @@ def gen_translations_for_connect(translations):
         return_str = return_str.rstrip()
         # Each of those meanings will have a single definition.
         return_str += f"</font>    <font color={magenta}>{value['definition']}</font>\n"
+        num_found +=1
     # If none found leave template for user to add their own.
-    if none_found:
+    if not num_found:
         return_str += f"<font color={cyan}>  </font>     <font color={magenta}>  </font>\n"
     return_str += "\n\n\n</pre>" # Add space for pics and close tag.
     return return_str.replace('"', "&quot;") # Protect JSON from double quotes by encoding them.
@@ -139,6 +145,7 @@ def parse_arguments():
     parser.add_argument("dictionary_code", help="dictionary code", choices=["enar","enzh","encz","ennl","enfr","ende","engr","enis","enit","enja","enko","enpl","enpt","enro","enru","enes","ensv","entr","aren","czen","deen","dees","esde","esen","esfr","esit","espt","fren","fres","gren","isen","iten","ites","jaen","koen","nlen","plen","pten","ptes","roen","ruen","sven","tren","zhen"], metavar ="DICTIONARY_CODE")
     parser.add_argument("-c", "--connect", help="create an Anki Card as well", action='store_true')
     parser.add_argument("-i", "--invert",  help="invert in other direction", action='store_true')
+    parser.add_argument("-n", "--numdefs", type=int, help="number of defns wanted")
     parser.add_argument("word", nargs='+',  help = "word (with optional article) to translate or to make Anki Card")
     args = parser.parse_args()
     return args
@@ -171,19 +178,23 @@ def main():
     invert = args.invert
     dictionary_code = args.dictionary_code
     connect = args.connect
+    if args.numdefs:
+        numdefs = args.numdefs
+    else:
+        numdefs = 9999
 
     # Get translations data from wordreference module.
     translations, *_  = wr.define_word(word, dictionary_code)
 
     # Always print retrieved data.
     print_examples(translations, invert)
-    print_translations(translations)
+    print_translations(translations, numdefs)
 
     # If connect argument is given also generate a card using Anki Connect.
     if connect:
        # Format the supplied word, add examples, leave space for pics, close <pre> tag.
        front_str = f"<pre><b>{article}{word}</b>" + gen_examples_for_connect(translations, invert)
-       back_str = gen_translations_for_connect(translations)
+       back_str = gen_translations_for_connect(translations, numdefs)
        data = json.loads(json_format_str)
        data['params']['note']['fields']['Front'] = front_str
        data['params']['note']['fields']['Back'] = back_str
