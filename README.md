@@ -1,28 +1,30 @@
 # WordRefAnkiNoteCreate
 A python command line utility for creating Anki Notes using wordreference.com, wordreference.py, Anki and the AnkiConnect AddOn.
-This used to be a tedious, manual process - what once took many minutes is now done in seconds.
-Note: Code does **not** add photos, that must be done manually by the user.
+This used to be a tedious, manual process - what once took many minutes now takes seconds.
+Note: Code does **not** add photos, that is done manually by the user.
 
 # Usage
 ```text
-usage: WordReferenceAnkiNoteCreate.py [-h] [-c] DICTIONARY_CODE word
+usage: WordReferenceAnkiNoteCreate.py [-h] [-c] [-i] [-n] DICTIONARY_CODE word
 
 get translation and/or make Anki note using wordreference.com
-Console output only without the -c switch.
-Console output *and* Anki Note created with the -c switch.
+Obtain console output *only* by omitting the -c switch.
+Obtain console output *and* Anki Note by supplying the -c switch.
 
 Invert switch is intended to support use case where lookup word is in English but
-examples are still given in the foreign language.
+examples are desired in the foreign language (if omitted examples are also in English).
 
-Numdefs switch is intended to help truncate the number of definitions returned
-often because WordReference throws in "extra" definitions.
+Numdefs switch is intended to truncate the number of definitions returned
+because WordReference often throws in "extra" definitions that may be related by not essential.
 
-The word can have an optional article e.g. "un bateu" ou "bateau" will both look up
-the same word but if an article is supplied it will be displayed on the card.
+The word parameter can have an optional article e.g. "un bateu" ou "bateau" will both look up
+the same word but the supplied article will be displayed on the card, helpful for gendered
+languages.
 
 positional arguments:
-  DICTIONARY_CODE        dictionary code
-  word                   word (with optional article) to translate or to make Anki Card
+  DICTIONARY_CODE        dictionary code (e.g. fren for french to english, enfr for english to french)
+  word                   word (with optional article) to be translated (e.g. bateau or "un bateau")
+                         word can be a quoted string - useful for articles or for multiword expressions.
 
 options:
   -h, --help             show this help message and exit
