@@ -17,7 +17,7 @@ examples are desired in the foreign language (if omitted examples are also in En
 Numdefs switch is intended to truncate the number of definitions returned
 because WordReference often throws in "extra" definitions that may be related by not essential.
 
-The word parameter can have an optional article e.g. "un bateu" ou "bateau" will both look up
+The word parameter can have an optional article e.g. "un bateau" ou "bateau" will both look up
 the same word but the supplied article will be displayed on the card, helpful for gendered
 languages.
 
