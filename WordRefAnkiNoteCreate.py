@@ -143,12 +143,12 @@ def gen_examples_for_connect(translations, invert):
     return return_str.replace('"', "&quot;") # Protect JSON from double quotes by encoding them.
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="get translation and/or make Anki Card using wordreference.com ")
+    parser = argparse.ArgumentParser(description="get translation and/or make Anki Note using wordreference.com ")
     parser.add_argument("dictionary_code", help="dictionary code", choices=["enar","enzh","encz","ennl","enfr","ende","engr","enis","enit","enja","enko","enpl","enpt","enro","enru","enes","ensv","entr","aren","czen","deen","dees","esde","esen","esfr","esit","espt","fren","fres","gren","isen","iten","ites","jaen","koen","nlen","plen","pten","ptes","roen","ruen","sven","tren","zhen"], metavar ="DICTIONARY_CODE")
-    parser.add_argument("-c", "--connect", help="create an Anki Card as well", action='store_true')
+    parser.add_argument("-c", "--connect", help="create an Anki Note as well", action='store_true')
     parser.add_argument("-i", "--invert",  help="invert in other direction", action='store_true')
     parser.add_argument("-n", "--numdefs", type=int, help="number of defns wanted")
-    parser.add_argument("word", nargs='+',  help = "word (with optional article) to translate or to make Anki Card")
+    parser.add_argument("word", nargs='+',  help = "word (with optional article) to translate or to make Anki Note")
     args = parser.parse_args()
     return args
 
