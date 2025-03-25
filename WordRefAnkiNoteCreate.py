@@ -76,10 +76,10 @@ def send_json_request(requestJsonString):
     return response['result']
 
 # Print translations to the terminal in an Anki Card specific way.
-def print_translations(translations, numdefs):
+def print_translations(translations, num_requested):
     num_found = 0
     for value in translations.values():
-        if num_found >= numdefs:
+        if num_found >= num_requested:
             break
         print (bgreen + value['word'] + terminal_reset)
         # A supplied word can have multiple meanings.
@@ -91,13 +91,13 @@ def print_translations(translations, numdefs):
     print(terminal_reset)
 
 # Gen the HTML code for the translations that will go on back of created card.
-def gen_translations_for_connect(translations, numdefs):
+def gen_translations_for_connect(translations, num_requested):
     # Tried optimizing the HTML for maximum maintainability but can only do so much because
     # Anki/QtWebEngine changes the HTML to match the DOM.
     return_str = "<pre>"
     num_found = 0
     for value in translations.values():
-        if num_found >= numdefs:
+        if num_found >= num_requested:
             break
         return_str += f"<font color={cyan}>"
         # A supplied word can have multiple meanings.
