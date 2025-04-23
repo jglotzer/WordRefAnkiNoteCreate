@@ -9,6 +9,8 @@ import wordreference as wr
 import argparse
 import json
 import urllib.request
+import urllib.error
+import sys
 
 # Desired JSON to be sent to AnkiConnect (see home page for AnkiConnect)
 # {
@@ -64,16 +66,25 @@ bcyan          = '\033[96m'
 # Code modified from that on AnkiConnect website.
 def send_json_request(requestJsonString):
     encodedJsonString = requestJsonString.encode('utf-8')
-    response = json.load(urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:8765', encodedJsonString)))
-    if len(response) != 2:
-        raise Exception('response has an unexpected number of fields')
-    if 'error' not in response:
-        raise Exception('response is missing required error field')
-    if 'result' not in response:
-        raise Exception('response is missing required result field')
-    if response['error'] is not None:
-        raise Exception(response['error'])
-    return response['result']
+    response = None
+    try:
+      response = json.load(urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:8765', encodedJsonString)))
+      if len(response) != 2:
+          raise Exception('response has an unexpected number of fields')
+      if 'error' not in response:
+          raise Exception('response is missing required error field')
+      if 'result' not in response:
+          raise Exception('response is missing required result field')
+      if response['error'] is not None:
+          raise Exception(response['error'])
+      return response['result']
+    except urllib.error.URLError:
+        print("URLLib error. Ensure that Anki is running and AnkiConnect is installed.")
+    except Exception as e:
+        if "it is a duplicate" in str(e):
+          print ("Duplicate. No note added.")
+        else:
+          raise e
 
 # Print translations to the terminal in an Anki Card specific way.
 def print_translations(translations, num_requested):
@@ -202,7 +213,10 @@ def main():
        data['params']['note']['fields']['Back'] = back_str
        json_string = json.dumps(data, ensure_ascii=False) # Don't want to escape non-ASCII chars
        result = send_json_request(json_string)
-       print('Created a new Anki Note with ID:{}\n'.format(result))
+       if result is not None:
+         print('Created a new Anki Note with ID:{}\n'.format(result))
+       else:
+         sys.exit(1)
 
 if __name__ == '__main__':
     main()
