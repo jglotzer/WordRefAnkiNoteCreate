@@ -157,6 +157,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="get translation and/or make Anki Note using wordreference.com ")
     parser.add_argument("dictionary_code", help="dictionary code", choices=["enar","enzh","encz","ennl","enfr","ende","engr","enis","enit","enja","enko","enpl","enpt","enro","enru","enes","ensv","entr","aren","czen","deen","dees","esde","esen","esfr","esit","espt","fren","fres","gren","isen","iten","ites","jaen","koen","nlen","plen","pten","ptes","roen","ruen","sven","tren","zhen"], metavar ="DICTIONARY_CODE")
     parser.add_argument("-c", "--connect", help="create an Anki Note as well", action='store_true')
+    parser.add_argument("-a", "--adjective", help="label with (adj)", action='store_true')
     parser.add_argument("-i", "--invert",  help="invert in other direction", action='store_true')
     parser.add_argument("-n", "--numdefs", type=int, help="number of defns wanted")
     parser.add_argument("word", nargs='+',  help = "word (with optional article) to translate or to make Anki Note")
@@ -176,16 +177,20 @@ def parse_arguments():
 #   -h, --help       show this help message and exit
 #   -c, --connect    create an Anki Card as well
 #   -i, --invert     invert direction
+#   -i, --numdefs    number of defintiions requested
+#   -a, --adjective  label as adjective
 def main():
     args = parse_arguments()
     # If more than one token in words consider the first to be an article which is not part of lookup.
-    # If only one token in words then article is the empty string.
     article=""
-    # Case of optional argument e.g. la maison
+    adjective=""
+    if args.adjective:
+        adjective=" (adj)"
+    # Case of optional article e.g. la maison
     if len(args.word) > 1:
         article = args.word[0] + " "
         word = args.word[1]
-    # case of no optional argument e.g. aller
+    # case of no optional article e.g. aller
     else:
         word = args.word[0]
     invert = args.invert
@@ -206,7 +211,7 @@ def main():
     # If connect argument is given also generate a card using Anki Connect.
     if connect:
        # Format the supplied word, add examples, leave space for pics, close <pre> tag.
-       front_str = f"<pre><b>{article}{word}</b>" + gen_examples_for_connect(translations, invert)
+       front_str = f"<pre><b>{article}{word}{adjective}</b>" + gen_examples_for_connect(translations, invert)
        back_str = gen_translations_for_connect(translations, numdefs)
        data = json.loads(json_format_str)
        data['params']['note']['fields']['Front'] = front_str
