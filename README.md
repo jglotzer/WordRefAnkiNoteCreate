@@ -13,18 +13,19 @@ entered in the HTML will be rendered as such, obviating the need to add any extr
 
 # Usage
 ```text
-usage: WordReferenceAnkiNoteCreate.py [-h] [-c] [-i] [-n] DICTIONARY_CODE word
+usage: WordReferenceAnkiNoteCreate.py [-h] [-c] [-i] [-a] [-n numdefs] DICTIONARY_CODE word
 
 positional arguments:
   DICTIONARY_CODE        dictionary code (e.g. fren for french to english, enfr for english to french)
   word                   word (with optional article) to be translated (e.g. bateau or "un bateau")
-                         word can be a quoted string - useful for articles or for multiword expressions.
+                         word can be a quoted string - needed if articles or for multiword expressions.
 
 options:
   -h, --help             show this help message and exit
   -c, --connect          create an Anki Card as well
   -i, --invert           invert in other direction
   -n, --numdefs NUMDEFS  number of defns wanted
+  -a, --adjective        label word with (adj)
 
 Obtain console output *only* by omitting the -c switch. This can be thought of as a "dryrun" mode or as a quick check.
 Obtain console output *and* Anki Note by supplying the -c switch. This is really the object of the exercise.
@@ -33,7 +34,9 @@ Invert switch is intended to support use case where lookup word is in English bu
 examples are desired in the foreign language (if omitted examples are also in English).
 
 Numdefs switch is intended to truncate the number of definitions returned
-because WordReference often throws in "extra" definitions that may be related by not essential.
+because WordReference often throws in "extra" definitions that may be related but not essential.
+
+Adjective switch will append the text (adj) to the supplied word.
 
 The word parameter can have an optional article e.g. "un bateau" ou "bateau" will both look up
 the same word but the supplied article will be displayed on the card, helpful for gendered
