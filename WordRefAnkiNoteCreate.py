@@ -12,26 +12,10 @@ import urllib.request
 import urllib.error
 import sys
 
-# Desired JSON to be sent to AnkiConnect (see home page for AnkiConnect)
-# {
-#     "action": "addNote",
-#     "version": 6,
-#     "params": {
-#         "note":
-#             {
-#                 "deckName": "French",
-#                 "modelName": "Basic (and reversed card)",
-#                 "fields": {
-#                     "Front": "front content",
-#                     "Back": "back content"
-#                    }
-#                 }
-#             }
-#  }
+# JSON to be sent to AnkiConnect (see home page for AnkiConnect)
 # NB: more complex options are possible, see AnkiConnect Home page.
 # NB: deckName is hardcoded here - change according to preference.
 # NB: modelName is hardcoded here - change according to preference.
-
 json_format_str = '{\
                     "action": "addNote",\
                     "version": 6,\
