@@ -152,7 +152,7 @@ def gen_examples_for_connect(translations, invert):
                 # This means example_index of 0 in non invert case.
                 # or example_index non-zero in invert case.
                 if (not example_index and not invert) or \
-                 (example_index and invert):
+                        (example_index and invert):
                     # Can have multiple phrases separated by a double space.
                     return_str += (
                         examples_list[example_index].replace("  ", "\n") + "\n"
