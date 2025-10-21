@@ -10,6 +10,8 @@
 import wordreference as wr
 import argparse
 import json
+import subprocess
+import os
 import urllib.request
 import urllib.error
 import sys
@@ -48,6 +50,11 @@ byellow = "\033[93m"
 bmagenta = "\033[95m"
 bcyan = "\033[96m"
 
+ANKI_CONNECT_URL = "http://127.0.0.1:8765"
+MODEL_PATH = os.path.expanduser(
+        "~/.local/share/piper/voices/fr_FR-siwis-medium")
+GEN_SCRIPT = os.path.expanduser("~/bin/genFrench.sh")
+
 
 # Use a passed in Json String to send an addNote command to
 # the Anki Connect server.
@@ -58,7 +65,7 @@ def send_json_request(requestJsonString):
     try:
         response = json.load(
             urllib.request.urlopen(
-                urllib.request.Request("http://127.0.0.1:8765",
+                urllib.request.Request(ANKI_CONNECT_URL,
                                        encodedJsonString)
             )
         )
@@ -78,6 +85,22 @@ def send_json_request(requestJsonString):
             print("Duplicate. No note added.")
         else:
             raise e
+
+
+# ------------------------
+# AnkiConnect helpers
+# ------------------------
+def anki_request(action, **params):
+    request_json = json.dumps({"action": action,
+                               "version": 6,
+                               "params": params}).encode("utf-8")
+    with urllib.request.urlopen(
+            urllib.request.Request(ANKI_CONNECT_URL,
+                                   request_json)) as response:
+        data = json.load(response)
+        if data.get("error"):
+            raise Exception(f"AnkiConnect error: {data['error']}")
+        return data["result"]
 
 
 # Print translations to the terminal in an Anki Card specific way.
@@ -157,7 +180,7 @@ def gen_examples_for_connect(translations, invert):
                     return_str += (
                         examples_list[example_index].replace("  ", "\n") + "\n"
                     )
-    return_str += "</font></i></pre>"  # close tags.
+    return_str += "</font></i>"  # close tags.
     return return_str.replace(
         '"', "&quot;"
     )  # Protect JSON from double quotes by encoding them.
@@ -290,11 +313,34 @@ def main():
 
     # If connect argument is given also generate a card using Anki Connect.
     if connect:
+        word_for_voice_lookup = f"{article}{word}"
+        word_for_filename_base = f"{word}"
+        filename_base = word_for_filename_base.replace(" ", "_")
+        output_mp3 = f"/tmp/{filename_base}.mp3"
+        cmd = [GEN_SCRIPT, word_for_voice_lookup, f"/tmp/{filename_base}"]
+        print("🎤 Generating audio with Piper...")
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(result.stderr)
+            sys.exit("❌ Piper audio generation failed.")
+        print(f"✅ Audio generated: {output_mp3}")
+
+        # ------------------------
+        # Step 3: Store file in Anki media
+        # ------------------------
+        media_filename = os.path.basename(output_mp3)
+        anki_request("storeMediaFile",
+                     filename=media_filename,
+                     path=output_mp3)
+        print(f"✅ Stored as {media_filename}")
+        sound_tag = f"[sound:{media_filename}]"
+
         # Format the supplied word, add examples, leave space for pics,
         # close <pre> tag.
         front_str = (
             f"<pre><b>{article}{word}{adjective}</b>"
             + gen_examples_for_connect(translations, invert)
+            + f"<br>{sound_tag}<br></pre>"
         )
         back_str = gen_translations_for_connect(translations, numdefs)
         data = json.loads(json_format_str)
