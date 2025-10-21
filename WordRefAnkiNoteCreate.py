@@ -267,10 +267,12 @@ def main():
     if args.adjective:
         adjective = " (adj)"
     # Case of optional article e.g. la maison
-    word = args.word[0].split()
+    word = args.word
     if len(word) > 1:
         article = word[0] + " "
         word = word[1]
+    else:
+        word = word[0]
     invert = args.invert
     dictionary_code = args.dictionary_code
     connect = args.connect
