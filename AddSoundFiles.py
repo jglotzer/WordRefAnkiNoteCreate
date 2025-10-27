@@ -12,7 +12,7 @@ import sys
 ANKI_CONNECT_URL = "http://127.0.0.1:8765"
 MODEL_PATH = os.path.expanduser("~/.local/share/piper/voices/fr_FR-siwis-medium")
 GEN_SCRIPT = os.path.expanduser("~/bin/genFrench.sh")
-NOTE_ID = 1671166077298
+NOTE_ID = 1761501756693
 
 # ------------------------
 # AnkiConnect helpers
@@ -25,6 +25,7 @@ def anki_request(action, **params):
             raise Exception(f"AnkiConnect error: {data['error']}")
         return data["result"]
 # --- Precompiled regex patterns ---
+BOLD_RE = re.compile(r"<b>([^<\n]*)", re.IGNORECASE)          # bold text at start of front of card
 RE_REFLEXIVE = re.compile(r"^\((s['e])\)\s*", re.IGNORECASE)  # capture (se) or (s')
 RE_BRACKETS  = re.compile(r"[\(\[\{<].*$")                    # strip after (, [, {, or <
 RE_HTML      = re.compile(r"&.*$")                            # strip trailing &nbsp etc.
@@ -34,6 +35,10 @@ RE_SPACES    = re.compile(r"\s{2,}")                          # normalize multip
 def clean_entry(entry: str) -> str:
     """
     Clean a dictionary/Anki entry for Piper audio generation:
+    - replaces "un(e) with un"
+    - replaces &nbsp; with a simple space
+    - replaces "/" with "ou"
+    - does away with qqn and qch for robustness and accurate voice generation
     - Removes leading reflexive prefixes for general cleaning
     - Strips trailing bracketed or HTML content
     - Normalizes spaces
@@ -42,7 +47,12 @@ def clean_entry(entry: str) -> str:
     """
     entry = entry.strip()
     entry = entry.replace("un(e) ", "un ")
-
+    entry = entry.replace("&nbsp;", " ")
+    entry = entry.replace("[qqn]", "quelque'un")
+    entry = entry.replace("[qch]", "quelque chose")
+    entry = entry.replace("qqn", "quelque'un")
+    entry = entry.replace("qch", "quelque chose")
+    entry = entry.replace("/", " ou ")
 
     # Check for leading reflexive
     reflexive_match = RE_REFLEXIVE.match(entry)
@@ -70,15 +80,16 @@ note_list = anki_request("findNotes", query="deck:French")
 # The syntax for list slicing is my_list[start:stop:step].
 # The start index is inclusive and the stop index is exclusive (up to, but not including).
 # Here's a poor man's multi use paradigm - pick one of the following two lines
-for note_id in note_list[800:1000]:
-#for note_id in [NOTE_ID]:
+# for note_id in note_list[2400:2500]:
+for note_id in [NOTE_ID]:
 
     # ------------------------
     # Step 1: Get note content
     # ------------------------
     note_info = anki_request("notesInfo", notes=[note_id])[0]
     front_html = note_info["fields"]["Front"]["value"]
-    word_match = re.search(r"<b>(.*?)</b>", front_html)
+    #word_match = re.search(r"<b>(.*?)</b>", front_html)
+    word_match = BOLD_RE.search(front_html)
     if not word_match:
         print("❌ No <b>word</b> found in note Front field for .", front_html)
         sys.exit(1)
@@ -87,7 +98,7 @@ for note_id in note_list[800:1000]:
     if mp3_match:
         print("🔁 Sound tag already present — skipping update.")
         continue
-    word = word_match.group(1)
+    word = word_match.group(1).strip()
     # Do some cleanup.
     word = clean_entry(word)
     filename_base = word.replace(" ", "_")
