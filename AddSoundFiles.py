@@ -101,7 +101,6 @@ for note_id in [NOTE_ID]:
     word = clean_entry(word)
     filename_base = word.replace(" ", "_")
     output_mp3 = f"/tmp/{filename_base}.mp3"
-
     print(f"✅ Extracted word: {word}")
 
     # ------------------------
