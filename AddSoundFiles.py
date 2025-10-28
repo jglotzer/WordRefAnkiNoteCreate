@@ -25,7 +25,7 @@ def anki_request(action, **params):
             raise Exception(f"AnkiConnect error: {data['error']}")
         return data["result"]
 # --- Precompiled regex patterns ---
-BOLD_RE = re.compile(r"<b>([^<\n]*)", re.IGNORECASE)          # bold text at start of front of card
+BOLD_RE      = re.compile(r"<b>([^<\n]*)", re.IGNORECASE)     # bold text at start of front of card
 RE_REFLEXIVE = re.compile(r"^\((s['e])\)\s*", re.IGNORECASE)  # capture (se) or (s')
 RE_BRACKETS  = re.compile(r"[\(\[\{<].*$")                    # strip after (, [, {, or <
 RE_HTML      = re.compile(r"&.*$")                            # strip trailing &nbsp etc.

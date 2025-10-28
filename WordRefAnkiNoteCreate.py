@@ -51,8 +51,7 @@ bmagenta = "\033[95m"
 bcyan = "\033[96m"
 
 ANKI_CONNECT_URL = "http://127.0.0.1:8765"
-MODEL_PATH = os.path.expanduser(
-        "~/.local/share/piper/voices/fr_FR-siwis-medium")
+MODEL_PATH = os.path.expanduser("~/.local/share/piper/voices/fr_FR-siwis-medium")
 GEN_SCRIPT = os.path.expanduser("~/bin/genFrench.sh")
 
 
@@ -63,12 +62,7 @@ def send_json_request(requestJsonString):
     encodedJsonString = requestJsonString.encode("utf-8")
     response = None
     try:
-        response = json.load(
-            urllib.request.urlopen(
-                urllib.request.Request(ANKI_CONNECT_URL,
-                                       encodedJsonString)
-            )
-        )
+        response = json.load(urllib.request.urlopen(urllib.request.Request(ANKI_CONNECT_URL, encodedJsonString)))
         if len(response) != 2:
             raise Exception("response has an unexpected number of fields")
         if "error" not in response:
@@ -91,12 +85,8 @@ def send_json_request(requestJsonString):
 # AnkiConnect helpers
 # ------------------------
 def anki_request(action, **params):
-    request_json = json.dumps({"action": action,
-                               "version": 6,
-                               "params": params}).encode("utf-8")
-    with urllib.request.urlopen(
-            urllib.request.Request(ANKI_CONNECT_URL,
-                                   request_json)) as response:
+    request_json = json.dumps({"action": action, "version": 6, "params": params}).encode("utf-8")
+    with urllib.request.urlopen(urllib.request.Request(ANKI_CONNECT_URL, request_json)) as response:
         data = json.load(response)
         if data.get("error"):
             raise Exception(f"AnkiConnect error: {data['error']}")
@@ -135,18 +125,13 @@ def gen_translations_for_connect(translations, num_requested):
             return_str += f"{meaning} "  # meaning is English Meaning.
         return_str = return_str.rstrip()
         # Each of those meanings will have a single definition.
-        return_str += \
-            f"</font>    <font color={magenta}>{value['definition']}</font>\n"
+        return_str += f"</font>    <font color={magenta}>{value['definition']}</font>\n"
         num_found += 1
     # If none found leave template for user to add their own.
     if not num_found:
-        return_str += (
-            f"<font color={cyan}>  </font>   <font color={magenta}>  </font>\n"
-        )
+        return_str += f"<font color={cyan}>  </font>   <font color={magenta}>  </font>\n"
     return_str += "\n\n\n</pre>"  # Add space for pics and close tag.
-    return return_str.replace(
-        '"', "&quot;"
-    )  # Protect JSON from double quotes by encoding them.
+    return return_str.replace('"', "&quot;")  # Protect JSON from double quotes by encoding them.
 
 
 # Print examples to the terminal in an Anki Card specific way.
@@ -158,8 +143,7 @@ def print_examples(translations, invert):
                 # Only want French examples, not English translations.
                 # This means example_index of 0 in non invert case.
                 # or example_index non-zero in invert case.
-                if (not example_index and not invert) or \
-                        (example_index and invert):
+                if (not example_index and not invert) or (example_index and invert):
                     # Can have multiple phrases separated by a double space.
                     print(examples_list[example_index].replace("  ", "\n"))
     print(terminal_reset)
@@ -174,22 +158,15 @@ def gen_examples_for_connect(translations, invert):
                 # Only want French examples, not English translations.
                 # This means example_index of 0 in non invert case.
                 # or example_index non-zero in invert case.
-                if (not example_index and not invert) or \
-                        (example_index and invert):
+                if (not example_index and not invert) or (example_index and invert):
                     # Can have multiple phrases separated by a double space.
-                    return_str += (
-                        examples_list[example_index].replace("  ", "\n") + "\n"
-                    )
+                    return_str += examples_list[example_index].replace("  ", "\n") + "\n"
     return_str += "</font></i>"  # close tags.
-    return return_str.replace(
-        '"', "&quot;"
-    )  # Protect JSON from double quotes by encoding them.
+    return return_str.replace('"', "&quot;")  # Protect JSON from double quotes by encoding them.
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(
-        description="get translation, make Anki Note with wordreference.com."
-    )
+    parser = argparse.ArgumentParser(description="get translation, make Anki Note with wordreference.com.")
     parser.add_argument(
         "dictionary_code",
         help="dictionary code",
@@ -241,18 +218,10 @@ def parse_arguments():
         ],
         metavar="DICTIONARY_CODE",
     )
-    parser.add_argument(
-        "-c", "--connect", help="create an Anki Note as well",
-        action="store_true"
-    )
-    parser.add_argument(
-        "-a", "--adjective", help="label with (adj)", action="store_true"
-    )
-    parser.add_argument(
-        "-i", "--invert", help="invert in other direction", action="store_true"
-    )
-    parser.add_argument("-n", "--numdefs",
-                        type=int, help="number of defns wanted")
+    parser.add_argument("-c", "--connect", help="create an Anki Note as well", action="store_true")
+    parser.add_argument("-a", "--adjective", help="label with (adj)", action="store_true")
+    parser.add_argument("-i", "--invert", help="invert in other direction", action="store_true")
+    parser.add_argument("-n", "--numdefs", type=int, help="number of defns wanted")
     parser.add_argument(
         "word",
         nargs="+",
@@ -329,26 +298,22 @@ def main():
         # Step 3: Store file in Anki media
         # ------------------------
         media_filename = os.path.basename(output_mp3)
-        anki_request("storeMediaFile",
-                     filename=media_filename,
-                     path=output_mp3)
+        anki_request("storeMediaFile", filename=media_filename, path=output_mp3)
         print(f"✅ Stored as {media_filename}")
         sound_tag = f"[sound:{media_filename}]"
 
         # Format the supplied word, add examples, leave space for pics,
         # close <pre> tag.
         front_str = (
-            f"<pre><b>{article}{word}{adjective}</b>"
-            + gen_examples_for_connect(translations, invert)
-            + f"<br>{sound_tag}<br></pre>"
+            f"<pre><b>{article}{word}{adjective}</b>" +
+            gen_examples_for_connect(translations, invert) +
+            f"<br>{sound_tag}<br></pre>"
         )
         back_str = gen_translations_for_connect(translations, numdefs)
         data = json.loads(json_format_str)
         data["params"]["note"]["fields"]["Front"] = front_str
         data["params"]["note"]["fields"]["Back"] = back_str
-        json_string = json.dumps(
-            data, ensure_ascii=False
-        )  # Don't want to escape non-ASCII chars
+        json_string = json.dumps(data, ensure_ascii=False)  # Don't want to escape non-ASCII chars
         result = send_json_request(json_string)
         if result is not None:
             print("Created a new Anki Note with ID:{}\n".format(result))
