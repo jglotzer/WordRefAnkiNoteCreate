@@ -12,7 +12,7 @@ import sys
 ANKI_CONNECT_URL = "http://127.0.0.1:8765"
 MODEL_PATH = os.path.expanduser("~/.local/share/piper/voices/fr_FR-siwis-medium")
 GEN_SCRIPT = os.path.expanduser("~/bin/genFrench.sh")
-NOTE_ID = 1761501756693
+NOTE_ID = 1733537980486
 
 # ------------------------
 # AnkiConnect helpers
@@ -30,7 +30,6 @@ RE_REFLEXIVE = re.compile(r"^\((s['e])\)\s*", re.IGNORECASE)  # capture (se) or 
 RE_BRACKETS  = re.compile(r"[\(\[\{<].*$")                    # strip after (, [, {, or <
 RE_HTML      = re.compile(r"&.*$")                            # strip trailing &nbsp etc.
 RE_SPACES    = re.compile(r"\s{2,}")                          # normalize multiple spaces
-
 
 def clean_entry(entry: str) -> str:
     """
@@ -67,7 +66,8 @@ def clean_entry(entry: str) -> str:
     # If reflexive prefix exists, append "headword - reflexive form"
     if reflexive_prefix:
         # Concatenate properly for (s') vs (se)
-        reflexive_word = reflexive_prefix.lower() + entry if reflexive_prefix == "s'" else f"{reflexive_prefix.lower()} {entry}"
+        reflexive_word = reflexive_prefix.lower() + entry if reflexive_prefix == "s'"\
+            else f"{reflexive_prefix.lower()} {entry}"
         entry = f"{entry} - {reflexive_word}"
 
     return entry
@@ -88,12 +88,10 @@ for note_id in [NOTE_ID]:
     # ------------------------
     note_info = anki_request("notesInfo", notes=[note_id])[0]
     front_html = note_info["fields"]["Front"]["value"]
-    #word_match = re.search(r"<b>(.*?)</b>", front_html)
     word_match = BOLD_RE.search(front_html)
     if not word_match:
         print("❌ No <b>word</b> found in note Front field for .", front_html)
         sys.exit(1)
-        #continue
     mp3_match = re.search(r"\[sound:.*\.mp3\]", front_html)
     if mp3_match:
         print("🔁 Sound tag already present — skipping update.")
@@ -146,4 +144,3 @@ for note_id in [NOTE_ID]:
         print(f"🎧 Updated note {note_id} Front field with sound tag.")
     except Exception as e:
         print("Anki request failed", e)
-
