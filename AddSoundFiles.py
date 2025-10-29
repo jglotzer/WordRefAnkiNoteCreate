@@ -103,7 +103,14 @@ for note_id in [NOTE_ID]:
     word = word_match.group(1).strip()
     # Do some cleanup.
     word = clean_entry(word)
-    filename_base = word.replace(" ", "_")
+    # To create a clean filename need to do a few things.
+    # Replace space with underscore.
+    # Remove characters that will confuse the shell.
+    before = " "
+    after =  "_"
+    remove = "?!"
+    translation_table = str.maketrans(before, after, remove)
+    filename_base = word.translate(translation_table)
     output_mp3 = f"/tmp/{filename_base}.mp3"
     print(f"✅ Extracted word: {word}")
 
