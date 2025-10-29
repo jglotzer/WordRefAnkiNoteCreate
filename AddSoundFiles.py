@@ -12,7 +12,11 @@ import sys
 ANKI_CONNECT_URL = "http://127.0.0.1:8765"
 MODEL_PATH = os.path.expanduser("~/.local/share/piper/voices/fr_FR-siwis-medium")
 GEN_SCRIPT = os.path.expanduser("~/bin/genFrench.sh")
-NOTE_ID = 1733537980486
+
+if len(sys.argv) > 1:
+    NOTE_ID = int(sys.argv[1])
+else:
+    NOTE_ID = 1732210861169
 
 # ------------------------
 # AnkiConnect helpers
