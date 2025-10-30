@@ -18,6 +18,7 @@ if len(sys.argv) > 1:
 else:
     NOTE_ID = 1732210861169
 
+
 # ------------------------
 # AnkiConnect helpers
 # ------------------------
@@ -28,12 +29,15 @@ def anki_request(action, **params):
         if data.get("error"):
             raise Exception(f"AnkiConnect error: {data['error']}")
         return data["result"]
+
+
 # --- Precompiled regex patterns ---
-BOLD_RE      = re.compile(r"<b>([^<\n]*)", re.IGNORECASE)     # bold text at start of front of card
+BOLD_RE = re.compile(r"<b>([^<\n]*)", re.IGNORECASE)  # bold text at start of front of card
 RE_REFLEXIVE = re.compile(r"^\((s['e])\)\s*", re.IGNORECASE)  # capture (se) or (s')
-RE_BRACKETS  = re.compile(r"[\(\[\{<].*$")                    # strip after (, [, {, or <
-RE_HTML      = re.compile(r"&.*$")                            # strip trailing &nbsp etc.
-RE_SPACES    = re.compile(r"\s{2,}")                          # normalize multiple spaces
+RE_BRACKETS = re.compile(r"[\(\[\{<].*$")  # strip after (, [, {, or <
+RE_HTML = re.compile(r"&.*$")  # strip trailing &nbsp etc.
+RE_SPACES = re.compile(r"\s{2,}")  # normalize multiple spaces
+
 
 def clean_entry(entry: str) -> str:
     """
@@ -70,11 +74,13 @@ def clean_entry(entry: str) -> str:
     # If reflexive prefix exists, append "headword - reflexive form"
     if reflexive_prefix:
         # Concatenate properly for (s') vs (se)
-        reflexive_word = reflexive_prefix.lower() + entry if reflexive_prefix == "s'"\
-            else f"{reflexive_prefix.lower()} {entry}"
+        reflexive_word = (
+            reflexive_prefix.lower() + entry if reflexive_prefix == "s'" else f"{reflexive_prefix.lower()} {entry}"
+        )
         entry = f"{entry} - {reflexive_word}"
 
     return entry
+
 
 # ------------------------
 # Step 0: Find Notes
@@ -84,9 +90,9 @@ note_list = anki_request("findNotes", query="deck:French")
 # The syntax for list slicing is my_list[start:stop:step].
 # The start index is inclusive and the stop index is exclusive (up to, but not including).
 # Here's a poor man's multi use paradigm - pick one of the following two lines
-# for note_id in note_list[2400:2500]:
-for note_id in [NOTE_ID]:
 
+# for note_id in note_list[3800:3900]:
+for note_id in [NOTE_ID]:
     # ------------------------
     # Step 1: Get note content
     # ------------------------
@@ -107,7 +113,7 @@ for note_id in [NOTE_ID]:
     # Replace space with underscore.
     # Remove characters that will confuse the shell.
     before = " "
-    after =  "_"
+    after = "_"
     remove = "?!"
     translation_table = str.maketrans(before, after, remove)
     filename_base = word.translate(translation_table)
@@ -129,9 +135,7 @@ for note_id in [NOTE_ID]:
     # Step 3: Store file in Anki media
     # ------------------------
     media_filename = os.path.basename(output_mp3)
-    anki_request("storeMediaFile",
-                 filename=media_filename,
-                 path=output_mp3)
+    anki_request("storeMediaFile", filename=media_filename, path=output_mp3)
     print(f"✅ Stored as {media_filename}")
     os.remove(output_mp3)
 
@@ -148,7 +152,7 @@ for note_id in [NOTE_ID]:
         # Add a <br> tag for cleaner appearing HTML
         new_front = front_value + f"<br><pre>{sound_tag}<br></pre>"
 
-    update_payload = {"id": note_id, "fields": { "Front": new_front }}
+    update_payload = {"id": note_id, "fields": {"Front": new_front}}
     try:
         anki_request("updateNoteFields", note=update_payload)
         print(f"🎧 Updated note {note_id} Front field with sound tag.")

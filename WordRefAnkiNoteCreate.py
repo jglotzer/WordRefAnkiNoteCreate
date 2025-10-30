@@ -54,6 +54,7 @@ ANKI_CONNECT_URL = "http://127.0.0.1:8765"
 MODEL_PATH = os.path.expanduser("~/.local/share/piper/voices/fr_FR-siwis-medium")
 GEN_SCRIPT = os.path.expanduser("~/bin/genFrench.sh")
 
+
 # Use a passed in Json String to send an addNote command to
 # the Anki Connect server.
 # Code modified from that on AnkiConnect website.
@@ -79,6 +80,7 @@ def send_json_request(requestJsonString):
         else:
             raise e
 
+
 # ------------------------
 # AnkiConnect helpers
 # ------------------------
@@ -89,6 +91,7 @@ def anki_request(action, **params):
         if data.get("error"):
             raise Exception(f"AnkiConnect error: {data['error']}")
         return data["result"]
+
 
 # Print translations to the terminal in an Anki Card specific way.
 def print_translations(translations, num_requested):
@@ -104,6 +107,7 @@ def print_translations(translations, num_requested):
         print(bmagenta, value["definition"])
         num_found += 1
     print(terminal_reset)
+
 
 # Gen the HTML code for the translations that will go on back of created card.
 def gen_translations_for_connect(translations, num_requested):
@@ -129,6 +133,7 @@ def gen_translations_for_connect(translations, num_requested):
     return_str += "\n\n\n</pre>"  # Add space for pics and close tag.
     return return_str.replace('"', "&quot;")  # Protect JSON from double quotes by encoding them.
 
+
 # Print examples to the terminal in an Anki Card specific way.
 def print_examples(translations, invert):
     print(byellow)
@@ -142,6 +147,7 @@ def print_examples(translations, invert):
                     # Can have multiple phrases separated by a double space.
                     print(examples_list[example_index].replace("  ", "\n"))
     print(terminal_reset)
+
 
 # Gen the HTML code for the examples that will go on front of created card.
 def gen_examples_for_connect(translations, invert):
@@ -157,6 +163,7 @@ def gen_examples_for_connect(translations, invert):
                     return_str += examples_list[example_index].replace("  ", "\n") + "\n"
     return_str += "</font></i>"  # close tags.
     return return_str.replace('"', "&quot;")  # Protect JSON from double quotes by encoding them.
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="get translation, make Anki Note with wordreference.com.")
@@ -222,6 +229,7 @@ def parse_arguments():
     )
     args = parser.parse_args()
     return args
+
 
 # usage:
 # WordReferenceAnkiNoteCreate.py [-h][-c][-a][-i][-n num]
@@ -297,9 +305,9 @@ def main():
         # Format the supplied word, add examples, leave space for pics,
         # close <pre> tag.
         front_str = (
-            f"<pre><b>{article}{word}{adjective}</b>" +
-            gen_examples_for_connect(translations, invert) +
-            f"<br>{sound_tag}<br></pre>"
+            f"<pre><b>{article}{word}{adjective}</b>"
+            + gen_examples_for_connect(translations, invert)
+            + f"<br>{sound_tag}<br></pre>"
         )
         back_str = gen_translations_for_connect(translations, numdefs)
         data = json.loads(json_format_str)
@@ -311,6 +319,7 @@ def main():
             print("Created a new Anki Note with ID:{}\n".format(result))
         else:
             sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
