@@ -282,7 +282,8 @@ def main():
 
     # If connect argument is given also generate a card using Anki Connect.
     if connect:
-        word_for_voice_lookup = f"{article}{word}"
+        # Add terminal space to avoid dropping final syllable.
+        word_for_voice_lookup = f"{article}{word} "
         word_for_filename_base = f"{word}"
         filename_base = word_for_filename_base.replace(" ", "_")
         output_mp3 = f"/tmp/{filename_base}.mp3"

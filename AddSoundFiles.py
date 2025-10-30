@@ -91,8 +91,8 @@ note_list = anki_request("findNotes", query="deck:French")
 # The start index is inclusive and the stop index is exclusive (up to, but not including).
 # Here's a poor man's multi use paradigm - pick one of the following two lines
 
-# for note_id in note_list[3800:3900]:
-for note_id in [NOTE_ID]:
+for note_id in note_list[3900:4000]:
+# for note_id in [NOTE_ID]:
     # ------------------------
     # Step 1: Get note content
     # ------------------------
@@ -123,7 +123,8 @@ for note_id in [NOTE_ID]:
     # ------------------------
     # Step 2: Generate audio file via genFrench.sh
     # ------------------------
-    cmd = [GEN_SCRIPT, word, f"/tmp/{filename_base}"]
+    # Add terminal space to avoid cutting off final syllable.
+    cmd = [GEN_SCRIPT, word + " ", f"/tmp/{filename_base}"]
     # print("🎤 Generating audio with Piper...")
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
