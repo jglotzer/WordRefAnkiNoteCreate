@@ -90,6 +90,7 @@ note_list = anki_request("findNotes", query="deck:French")
 # The syntax for list slicing is my_list[start:stop:step].
 # The start index is inclusive and the stop index is exclusive (up to, but not including).
 # Here's a poor man's multi use paradigm - pick one of the following two lines
+# ATTN: Must use second form when combining with Anki AddOn!
 
 for note_id in note_list[3900:4000]:
 # for note_id in [NOTE_ID]:
@@ -112,8 +113,8 @@ for note_id in note_list[3900:4000]:
     # To create a clean filename need to do a few things.
     # Replace space with underscore.
     # Remove characters that will confuse the shell.
-    before = " "
-    after = "_"
+    before = " '"
+    after = "__"
     remove = "?!"
     translation_table = str.maketrans(before, after, remove)
     filename_base = word.translate(translation_table)
