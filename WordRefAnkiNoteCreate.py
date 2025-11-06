@@ -227,6 +227,7 @@ def parse_arguments():
         nargs="+",
         help="word (with optional article) to translate or to make Anki Note",
     )
+    parser.add_argument("-s", "--se", help="treat as se verb", action="store_true")
     args = parser.parse_args()
     return args
 
@@ -236,6 +237,7 @@ def parse_arguments():
 #                                DICTIONARY_CODE [article] word
 
 # get translation and/or make Anki Card using wordreference.com
+# now create audio files using Piper as well
 
 # positional arguments:
 #   DICTIONARY_CODE  dictionary code
@@ -250,6 +252,7 @@ def parse_arguments():
 #   -i, --invert     invert direction
 #   -n, --numdefs    number of defintiions requested
 #   -a, --adjective  label as adjective
+#   -s, --se          treat as a se verbe
 def main():
     args = parse_arguments()
     # If more than one token in words consider the first to be an article which
@@ -268,6 +271,7 @@ def main():
     invert = args.invert
     dictionary_code = args.dictionary_code
     connect = args.connect
+    se = args.se
     if args.numdefs:
         numdefs = args.numdefs
     else:
@@ -287,6 +291,11 @@ def main():
         word_for_filename_base = f"{word}"
         filename_base = word_for_filename_base.replace(" ", "_")
         output_mp3 = f"/tmp/{filename_base}.mp3"
+        if se:
+            if word_for_voice_lookup[0] in ("a", "e", "é", "i", "o", "ô", "u", "y"):
+                word_for_voice_lookup = f"{word_for_voice_lookup}  - s'{word_for_voice_lookup}"
+            else:
+                word_for_voice_lookup = f"{word_for_voice_lookup}  - se {word_for_voice_lookup}"
         cmd = [GEN_SCRIPT, word_for_voice_lookup, f"/tmp/{filename_base}"]
         print("🎤 Generating audio with Piper...")
         result = subprocess.run(cmd, capture_output=True, text=True)
@@ -318,7 +327,9 @@ def main():
         result = send_json_request(json_string)
         if result is not None:
             print("Created a new Anki Note with ID:{}\n".format(result))
+            os.remove(output_mp3)
         else:
+            os.remove(output_mp3)
             sys.exit(1)
 
 
