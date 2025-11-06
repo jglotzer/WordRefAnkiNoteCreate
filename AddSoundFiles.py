@@ -152,7 +152,6 @@ for note_id in note_list[3900:4000]:
     else:
         # Add a <br> tag for cleaner appearing HTML
         new_front = front_value + f"<br><pre>{sound_tag}<br></pre>"
-
     update_payload = {"id": note_id, "fields": {"Front": new_front}}
     try:
         anki_request("updateNoteFields", note=update_payload)
