@@ -25,10 +25,10 @@ fi
 
 # https://stackoverflow.com/questions/48470049/build-a-json-string-with-bash-variables
 JSON_STRING=$($JQ -n --arg text "$TEXT" '{text: $text}')
-
+echo $JSON_STRING > /tmp/json_string
 if ! $CURL -s -X POST -H 'Content-Type: application/json' -d "$JSON_STRING" -o "${OUTFILE_WAV}" localhost:5000
 then
-  echo "Curl to local server call failed."
+  echo "Curl to Piper Webserver call failed."
   exit 1
 fi
 
