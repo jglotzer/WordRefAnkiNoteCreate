@@ -30,7 +30,7 @@ def generate_tts_google(text, filename="output.mp3"):
         out.write(response.audio_content)
         print(f"✅ Saved to /tmp/{filename}")
 
-    boost_db = 5.0
+    boost_db = 6.0
     subprocess.run(["/usr/bin/ffmpeg", "-y", "-loglevel", "error", "-i", "/tmp/" + filename,
                     "-filter:a", f"volume=+{boost_db}dB",
                    filename], check=True,
