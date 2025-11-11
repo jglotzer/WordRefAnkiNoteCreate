@@ -149,10 +149,10 @@ for note_id in note_list[3900:4000]:
 
     # Insert before the last </pre> if it exists, else append
     if front_value.strip().endswith("</pre>"):
-        new_front = re.sub(r"</pre>\s*$", f"{sound_tag}<br></pre>", front_value)
+        new_front = re.sub(r"</pre>\s*$", f"<br><br>{sound_tag}</pre>", front_value)
     else:
         # Add a <br> tag for cleaner appearing HTML
-        new_front = front_value + f"<br><pre>{sound_tag}<br></pre>"
+        new_front = front_value + f"<br><br><pre>{sound_tag}</pre>"
     update_payload = {"id": note_id, "fields": {"Front": new_front}}
     try:
         anki_request("updateNoteFields", note=update_payload)
