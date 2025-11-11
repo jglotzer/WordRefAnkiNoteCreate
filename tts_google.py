@@ -3,6 +3,8 @@
 
 from google.cloud import texttospeech
 import sys
+import subprocess
+import os
 
 def generate_tts_google(text, filename="output.mp3"):
     client = texttospeech.TextToSpeechClient()
@@ -17,19 +19,30 @@ def generate_tts_google(text, filename="output.mp3"):
         audio_encoding=texttospeech.AudioEncoding.MP3,
         speaking_rate=1.0,       # default
         pitch=0.0,               # default
-        volume_gain_db=2.0        # increase volume slightly
+        volume_gain_db=0.0       # doesn't seem to do anything
     )
 
     response = client.synthesize_speech(
         input=synthesis_input, voice=voice, audio_config=audio_config
     )
 
-    with open(filename, "wb") as out:
+    with open("/tmp/" + filename, "wb") as out:
         out.write(response.audio_content)
-        print(f"✅ Saved to {filename}")
+        print(f"✅ Saved to /tmp/{filename}")
+
+    boost_db = 5.0
+    subprocess.run(["/usr/bin/ffmpeg", "-y", "-loglevel", "error", "-i", "/tmp/" + filename,
+                    "-filter:a", f"volume=+{boost_db}dB",
+                   filename], check=True,
+                   stdout=subprocess.DEVNULL,
+                   stderr=subprocess.DEVNULL
+                   )
+    print(f"✅ Saved to {filename}")
+    os.remove("/tmp/" + filename)
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("usage: tts.google.py <text> <filename>")
+        sys.exit(1)
     generate_tts_google(sys.argv[1], sys.argv[2])
