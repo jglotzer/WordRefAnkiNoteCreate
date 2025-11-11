@@ -61,3 +61,7 @@ if __name__ == "__main__":
                    )
     print(f"✅ Saved to {filename}")
     os.remove("/tmp/" + filename)
+    subprocess.run(["/usr/bin/mpv", filename], check=True,
+                   stdout=subprocess.DEVNULL,
+                   stderr=subprocess.DEVNULL
+                   )

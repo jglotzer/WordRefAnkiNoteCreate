@@ -39,6 +39,10 @@ def generate_tts_google(text, filename="output.mp3"):
                    )
     print(f"✅ Saved to {filename}")
     os.remove("/tmp/" + filename)
+    subprocess.run(["/usr/bin/mpv", filename], check=True,
+                   stdout=subprocess.DEVNULL,
+                   stderr=subprocess.DEVNULL
+                   )
 
 
 if __name__ == "__main__":
