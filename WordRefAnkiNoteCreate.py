@@ -294,8 +294,10 @@ def main():
         if se:
             if word_for_voice_lookup[0] in ("a", "e", "é", "i", "o", "ô", "u", "y"):
                 word_for_voice_lookup = f"{word_for_voice_lookup}  - s'{word_for_voice_lookup}"
+                article = "(s') "  # overload "article" since can only be a verb.
             else:
                 word_for_voice_lookup = f"{word_for_voice_lookup}  - se {word_for_voice_lookup}"
+                article = "(se) "  # overload "article" since can only be a verb.
         cmd = [GEN_SCRIPT, word_for_voice_lookup, f"/tmp/{filename_base}"]
         print("🎤 Generating audio with Piper...")
         result = subprocess.run(cmd, capture_output=True, text=True)
