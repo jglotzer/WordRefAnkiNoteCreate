@@ -5,13 +5,13 @@ import subprocess
 import os
 
 
-def generate_tts_polly(text, filename="output.mp3"):
+def generate_tts_polly(text, filename):
     polly = boto3.client("polly", region_name="us-east-1")  # IAD
 
     response = polly.synthesize_speech(
         Text=text,
-        OutputFormat="mp3",
         Engine="generative",
+        OutputFormat="mp3",
         VoiceId="Celine",  # Other French voices: Lea, Mathieu
         LanguageCode="fr-FR",
     )
@@ -21,7 +21,7 @@ def generate_tts_polly(text, filename="output.mp3"):
         print(f"✅ Saved to {filename}")
 
 
-def generate_tts_ssml_polly(text, filename="output.mp3"):
+def generate_tts_ssml_polly(text, filename):
     polly = boto3.client("polly", region_name="us-east-1")  # IAD
 
     # Use SSML with an f-string to inject text dynamically
@@ -47,15 +47,15 @@ def generate_tts_ssml_polly(text, filename="output.mp3"):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("usage: tts.polly.py <text> <filename>")
+        print("usage: tts_polly.py <text> <filename>")
         sys.exit(1)
     text = sys.argv[1]
-    filename = sys.argv[2]
+    fileName = sys.argv[2]
+    filename = f"{fileName}.mp3"
     boost_db = 6
     generate_tts_ssml_polly(text, "/tmp/" + filename)
     subprocess.run(["/usr/bin/ffmpeg", "-y", "-loglevel", "error", "-i", "/tmp/" + filename,
-                    "-filter:a", f"volume=+{boost_db}dB",
-                   filename], check=True,
+                    "-filter:a", f"volume=+{boost_db}dB", filename], check=True,
                    stdout=subprocess.DEVNULL,
                    stderr=subprocess.DEVNULL
                    )
