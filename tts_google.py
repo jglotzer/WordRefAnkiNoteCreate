@@ -30,7 +30,16 @@ def generate_tts_google(text, filename):
         out.write(response.audio_content)
         print(f"✅ Saved to /tmp/{filename}")
 
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("usage: tts_google.py <text> <filename>")
+        sys.exit(1)
+    text = sys.argv[1]
+    fileName = sys.argv[2]
+    filename = f"{fileName}.mp3"
     boost_db = 8.0
+    generate_tts_google(text, filename)
     subprocess.run(["/usr/bin/ffmpeg", "-y", "-loglevel", "error", "-i", "/tmp/" + filename,
                     "-filter:a", f"volume=+{boost_db}dB", filename], check=True,
                    stdout=subprocess.DEVNULL,
@@ -43,12 +52,3 @@ def generate_tts_google(text, filename):
                    stderr=subprocess.DEVNULL
                    )
 
-
-if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("usage: tts_google.py <text> <filename>")
-        sys.exit(1)
-    text = sys.argv[1]
-    fileName = sys.argv[2]
-    filename = f"{fileName}.mp3"
-    generate_tts_google(text, fileName)

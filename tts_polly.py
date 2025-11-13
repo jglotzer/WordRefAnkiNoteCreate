@@ -4,7 +4,6 @@ import sys
 import subprocess
 import os
 
-
 def generate_tts_polly(text, filename):
     polly = boto3.client("polly", region_name="us-east-1")  # IAD
 
@@ -52,7 +51,7 @@ if __name__ == "__main__":
     text = sys.argv[1]
     fileName = sys.argv[2]
     filename = f"{fileName}.mp3"
-    boost_db = 6
+    boost_db = 6.0
     generate_tts_ssml_polly(text, "/tmp/" + filename)
     subprocess.run(["/usr/bin/ffmpeg", "-y", "-loglevel", "error", "-i", "/tmp/" + filename,
                     "-filter:a", f"volume=+{boost_db}dB", filename], check=True,
