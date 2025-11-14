@@ -33,7 +33,7 @@ def generate_tts_google(text, filename):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("usage: tts_google.py <text> <filename>")
+        print("usage: google_tts.py <text> <filename base>")
         sys.exit(1)
     text = sys.argv[1]
     fileName = sys.argv[2]
