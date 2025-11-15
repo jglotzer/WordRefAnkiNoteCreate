@@ -58,6 +58,7 @@ def clean_entry(entry: str) -> str:
     entry = entry.replace("[qqn]", "quelque'un")
     entry = entry.replace("[qch]", "quelque chose")
     entry = entry.replace("qqn", "quelque'un")
+    entry = entry.replace("qqch", "quelque chose")
     entry = entry.replace("qch", "quelque chose")
     entry = entry.replace("/", " ou ")
 
