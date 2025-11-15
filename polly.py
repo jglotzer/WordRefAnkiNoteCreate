@@ -49,8 +49,8 @@ if __name__ == "__main__":
         print("usage: polly.py <text> <filename base>")
         sys.exit(1)
     text = sys.argv[1]
-    fileName = sys.argv[2]
-    filename = f"{fileName}.mp3"
+    fileNameBase = sys.argv[2]
+    filename = f"{fileNameBase}.mp3"
     boost_db = 6.0
     generate_tts_ssml_polly(text, "/tmp/" + filename)
     subprocess.run(["/usr/bin/ffmpeg", "-y", "-loglevel", "error", "-i", "/tmp/" + filename,
