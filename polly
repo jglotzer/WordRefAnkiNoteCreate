@@ -46,7 +46,7 @@ def generate_tts_ssml_polly(text, filename):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("usage: polly.py <text> <filename base>")
+        print("usage: polly <text> <filename base>")
         sys.exit(1)
     text = sys.argv[1]
     fileNameBase = sys.argv[2]
