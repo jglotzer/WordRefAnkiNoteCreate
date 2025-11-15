@@ -170,52 +170,7 @@ def parse_arguments():
     parser.add_argument(
         "dictionary_code",
         help="dictionary code",
-        choices=[
-            "enar",
-            "enzh",
-            "encz",
-            "ennl",
-            "enfr",
-            "ende",
-            "engr",
-            "enis",
-            "enit",
-            "enja",
-            "enko",
-            "enpl",
-            "enpt",
-            "enro",
-            "enru",
-            "enes",
-            "ensv",
-            "entr",
-            "aren",
-            "czen",
-            "deen",
-            "dees",
-            "esde",
-            "esen",
-            "esfr",
-            "esit",
-            "espt",
-            "fren",
-            "fres",
-            "gren",
-            "isen",
-            "iten",
-            "ites",
-            "jaen",
-            "koen",
-            "nlen",
-            "plen",
-            "pten",
-            "ptes",
-            "roen",
-            "ruen",
-            "sven",
-            "tren",
-            "zhen",
-        ],
+        choices=[lang[0] for lang in wr.wr_available_dictionaries],
         metavar="DICTIONARY_CODE",
     )
     parser.add_argument("-c", "--connect", help="create an Anki Note as well", action="store_true")
@@ -252,7 +207,7 @@ def parse_arguments():
 #   -i, --invert     invert direction
 #   -n, --numdefs    number of defintiions requested
 #   -a, --adjective  label as adjective
-#   -s, --se          treat as a se verbe
+#   -s, --se         treat as a se verbe
 def main():
     args = parse_arguments()
     # If more than one token in words consider the first to be an article which
