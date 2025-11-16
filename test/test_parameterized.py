@@ -19,6 +19,8 @@ from WordRefAnkiNoteCreate import (
         ("l' ami!", "l__ami"),
         ("qu'est-ce?", "qu_est-ce"),
         ("a b c", "a_b_c"),
+        ("c'est un ami ?", "c_est_un_ami_"),
+        ("c'est un ami ?!?!", "c_est_un_ami_")
     ]
 )
 def test_gen_clean_filename_base(input_str, expected):
