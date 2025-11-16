@@ -253,7 +253,7 @@ def parse_arguments():
 #   -i, --invert     invert direction
 #   -n, --numdefs    number of defintiions requested
 #   -a, --adjective  label as adjective
-#   -s, --se         treat as a se verbe
+#   -s, --se         treat as se verb
 def main():
     args = parse_arguments()
     # If more than one token in words consider the first to be an article which
@@ -285,7 +285,8 @@ def main():
     print_examples(translations, invert)
     print_translations(translations, numdefs)
 
-    # If connect argument is given also generate a card using Anki Connect.
+    # If connect argument is given also generate a card (note) using Anki Connect.
+    # Include a sound file using Piper model.
     if connect:
         (sound_tag, output_mp3) = gen_sound_file_and_tag(article, word, se)
 
