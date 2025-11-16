@@ -1,4 +1,5 @@
 import json
+import pytest
 from unittest.mock import patch, MagicMock
 
 from WordRefAnkiNoteCreate import (
@@ -8,41 +9,45 @@ from WordRefAnkiNoteCreate import (
 )
 
 # -------------------------
-#  Pure function tests
+# gen_clean_filename_base
 # -------------------------
 
-def test_gen_clean_filename_base_simple():
-    assert gen_clean_filename_base("maison") == "maison"
-
-
-def test_gen_clean_filename_base_punctuation():
-    # space → "_", apostrophe → "_"; remove '?', '!'
-    assert gen_clean_filename_base("l' ami!") == "l__ami"
-
-
-# --- gen_word_for_voice_lookup ---
-
-def test_gen_word_for_voice_lookup_article_noun():
-    # Valid use case: noun with article, no "se"
-    out = gen_word_for_voice_lookup("un ", "oiseau", se=False)
-    assert out == "un oiseau "
-
-
-def test_gen_word_for_voice_lookup_se_consonant():
-    # Valid SE verb example: consonant start
-    out = gen_word_for_voice_lookup("", "débattre", se=True)
-    assert "se débattre" in out
-
-
-def test_gen_word_for_voice_lookup_se_vowel():
-    # Valid SE verb example: vowel start, no article
-    out = gen_word_for_voice_lookup("", "enfuir", se=True)
-    # Should produce "...  - s'enfuir "
-    assert "s'enfuir" in out
+@pytest.mark.parametrize(
+    "input_str, expected",
+    [
+        ("maison", "maison"),
+        ("l' ami!", "l__ami"),
+        ("qu'est-ce?", "qu_est-ce"),
+        ("a b c", "a_b_c"),
+        ("c'est un ami ?", "c_est_un_ami_"),
+        ("c'est un ami ?!?!", "c_est_un_ami_")
+    ]
+)
+def test_gen_clean_filename_base(input_str, expected):
+    assert gen_clean_filename_base(input_str) == expected
 
 
 # -------------------------
-#  Mocking urlopen
+# gen_word_for_voice_lookup
+# -------------------------
+
+@pytest.mark.parametrize(
+    "article, word, se, expected_substring",
+    [
+        ("un ", "oiseau", False, "un oiseau "),
+        ("la ", "maison", False, "la maison "),
+        ("le ", "chat", False, "le chat "),
+        ("", "débattre", True, "se débattre"),
+        ("", "enfuir", True, "s'enfuir"),
+    ]
+)
+def test_gen_word_for_voice_lookup(article, word, se, expected_substring):
+    out = gen_word_for_voice_lookup(article, word, se=se)
+    assert expected_substring in out
+
+
+# -------------------------
+# send_json_request
 # -------------------------
 
 @patch("urllib.request.urlopen")
@@ -53,7 +58,5 @@ def test_send_json_request_success(mock_urlopen):
     mock_file.read.return_value = json.dumps(fake_response).encode("utf-8")
     mock_urlopen.return_value = mock_file
 
-    result = send_json_request('{"foo": "bar"}')
-
-    assert result == 12345
+    assert send_json_request('{"foo": "bar"}') == 12345
     mock_urlopen.assert_called_once()
