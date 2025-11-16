@@ -191,7 +191,6 @@ def gen_sound_file_and_tag(article, word, se):
     output_mp3 = f"/tmp/{filename_base}.mp3"
     cmd = [GEN_SCRIPT, word_for_voice_lookup, f"/tmp/{filename_base}"]
     print("🎤 Generating audio with Piper...")
-    print(cmd)
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         print(result.stderr)
