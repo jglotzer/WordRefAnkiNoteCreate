@@ -164,6 +164,52 @@ def gen_examples_for_connect(translations, invert):
     return_str += "</font></i>"  # close tags.
     return return_str.replace('"', "&quot;")  # Protect JSON from double quotes by encoding them.
 
+def gen_clean_filename_base(word):
+    # Replace space with underscore.
+    # Remove characters that will confuse the shell.
+    before = " '"
+    after = "__"
+    remove = "?!"
+    translation_table = str.maketrans(before, after, remove)
+    return word.translate(translation_table)
+
+def gen_word_for_voice_lookup(article, word, se):
+    # Add terminal space to avoid dropping final syllable.
+    word_for_voice_lookup = f"{article}{word} "
+    if se:
+        if word_for_voice_lookup[0] in ("a", "e", "é", "i", "o", "ô", "u", "y"):
+            word_for_voice_lookup = f"{word_for_voice_lookup}  - s'{word_for_voice_lookup}"
+            article = "(s') "  # overload "article" since can only be a verb.
+        else:
+            word_for_voice_lookup = f"{word_for_voice_lookup}  - se {word_for_voice_lookup}"
+            article = "(se) "  # overload "article" since can only be a verb.
+    return word_for_voice_lookup
+
+def gen_sound_file_and_tag(article, word, se):
+    filename_base = gen_clean_filename_base(word)
+    word_for_voice_lookup = gen_word_for_voice_lookup(article, word, se)
+    output_mp3 = f"/tmp/{filename_base}.mp3"
+    cmd = [GEN_SCRIPT, word_for_voice_lookup, f"/tmp/{filename_base}"]
+    print("🎤 Generating audio with Piper...")
+    print(cmd)
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(result.stderr)
+        sys.exit("❌ Piper audio generation failed.")
+    print(f"✅ Audio generated: {output_mp3}")
+
+    # ------------------------
+    # Step 3: Store file in Anki media
+    # ------------------------
+    media_filename = os.path.basename(output_mp3)
+    anki_request("storeMediaFile", filename=media_filename, path=output_mp3)
+    print(f"✅ Stored as {media_filename}")
+    sound_tag = f"[sound:{media_filename}]"
+
+    # ------------------------
+    # Step 4: Return Sount Tag string and mp3 output file
+    # ------------------------
+    return (sound_tag, output_mp3)
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="get translation, make Anki Note with wordreference.com.")
@@ -241,40 +287,7 @@ def main():
 
     # If connect argument is given also generate a card using Anki Connect.
     if connect:
-        # Add terminal space to avoid dropping final syllable.
-        word_for_voice_lookup = f"{article}{word} "
-        word_for_filename_base = f"{word}"
-        # To create a clean filename need to do a few things.
-        # Replace space with underscore.
-        # Remove characters that will confuse the shell.
-        before = " '"
-        after = "__"
-        remove = "?!"
-        translation_table = str.maketrans(before, after, remove)
-        filename_base = word_for_filename_base.translate(translation_table)
-        output_mp3 = f"/tmp/{filename_base}.mp3"
-        if se:
-            if word_for_voice_lookup[0] in ("a", "e", "é", "i", "o", "ô", "u", "y"):
-                word_for_voice_lookup = f"{word_for_voice_lookup}  - s'{word_for_voice_lookup}"
-                article = "(s') "  # overload "article" since can only be a verb.
-            else:
-                word_for_voice_lookup = f"{word_for_voice_lookup}  - se {word_for_voice_lookup}"
-                article = "(se) "  # overload "article" since can only be a verb.
-        cmd = [GEN_SCRIPT, word_for_voice_lookup, f"/tmp/{filename_base}"]
-        print("🎤 Generating audio with Piper...")
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        if result.returncode != 0:
-            print(result.stderr)
-            sys.exit("❌ Piper audio generation failed.")
-        print(f"✅ Audio generated: {output_mp3}")
-
-        # ------------------------
-        # Step 3: Store file in Anki media
-        # ------------------------
-        media_filename = os.path.basename(output_mp3)
-        anki_request("storeMediaFile", filename=media_filename, path=output_mp3)
-        print(f"✅ Stored as {media_filename}")
-        sound_tag = f"[sound:{media_filename}]"
+        (sound_tag, output_mp3) = gen_sound_file_and_tag(article, word, se)
 
         # Format the supplied word, add examples, leave space for pics,
         # close <pre> tag.
