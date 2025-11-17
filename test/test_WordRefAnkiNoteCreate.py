@@ -4,22 +4,13 @@ from unittest.mock import patch, MagicMock
 # https://pavolkutaj.medium.com/how-to-test-printed-output-in-python-with-pytest-and-its-capsys-fixture-161010cfc5ad
 
 from WordRefAnkiNoteCreate import (
+    terminal_reset, bgreen, byellow, bmagenta, bcyan,
     gen_clean_filename_base,
     send_json_request,
     gen_word_for_voice_lookup,
     print_translations,
     print_examples,
 )
-
-# -------------------------
-# Terminal Control Characters
-# -------------------------
-terminal_reset = "\033[00m"
-italic = "\033[03m"
-bgreen = "\033[92m"
-byellow = "\033[93m"
-bmagenta = "\033[95m"
-bcyan = "\033[96m"
 
 # -------------------------
 # gen_clean_filename_base
