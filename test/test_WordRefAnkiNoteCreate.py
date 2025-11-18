@@ -22,7 +22,7 @@ from WordRefAnkiNoteCreate import (
     "input_str, expected",
     [
         ("maison", "maison"),
-        ("l' ami!", "l__ami"),
+        ("l'ami!", "l_ami"),
         ("qu'est-ce?", "qu_est-ce"),
         ("a b c", "a_b_c"),
         ("c'est un ami ?", "c_est_un_ami"),
