@@ -171,7 +171,7 @@ def gen_clean_filename_base(word):
     after = "__"
     remove = "?!"
     translation_table = str.maketrans(before, after, remove)
-    return word.translate(translation_table)
+    return word.translate(translation_table).rstrip("_")
 
 def gen_word_for_voice_lookup(article, word, se):
     # Add terminal space to avoid dropping final syllable.
