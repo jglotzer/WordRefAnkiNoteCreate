@@ -37,18 +37,18 @@ def test_gen_clean_filename_base(input_str, expected):
 # -------------------------
 
 @pytest.mark.parametrize(
-    "article, word, se, expected_substring",
+    "article, word, se, expected",
     [
         ("un ", "oiseau", False, "un oiseau "),
         ("la ", "maison", False, "la maison "),
         ("le ", "chat", False, "le chat "),
-        ("", "débattre", True, "se débattre"),
-        ("", "enfuir", True, "s'enfuir"),
+        ("", "débattre", True, "débattre   - se débattre "),
+        ("", "enfuir", True, "enfuir   - s'enfuir "),
     ]
 )
-def test_gen_word_for_voice_lookup(article, word, se, expected_substring):
-    out = gen_word_for_voice_lookup(article, word, se=se)
-    assert expected_substring in out
+def test_gen_word_for_voice_lookup(article, word, se, expected):
+    generated = gen_word_for_voice_lookup(article, word, se=se)
+    assert expected == generated
 
 
 # -------------------------
