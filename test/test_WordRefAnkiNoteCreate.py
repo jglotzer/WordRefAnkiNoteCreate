@@ -4,13 +4,14 @@ from unittest.mock import patch, MagicMock
 # https://pavolkutaj.medium.com/how-to-test-printed-output-in-python-with-pytest-and-its-capsys-fixture-161010cfc5ad
 
 from WordRefAnkiNoteCreate import (
-    terminal_reset, bgreen, byellow, bmagenta, bcyan, cyan, magenta,
+    terminal_reset, bgreen, byellow, bmagenta, bcyan, cyan, magenta, yellow,
     gen_clean_filename_base,
     send_json_request,
     gen_word_for_voice_lookup,
     print_translations,
     print_examples,
     gen_translations_for_connect,
+    gen_examples_for_connect,
 )
 
 # -------------------------
@@ -44,6 +45,7 @@ def test_gen_clean_filename_base(input_str, expected):
         ("le ", "chat", False, "le chat "),
         ("", "débattre", True, "débattre   - se débattre "),
         ("", "enfuir", True, "enfuir   - s'enfuir "),
+        ("", "éloigner", True, "éloigner   - s'éloigner "),
     ]
 )
 def test_gen_word_for_voice_lookup(article, word, se, expected):
@@ -96,6 +98,21 @@ def test_print_translations(capsys, translations, expected_out):
 )
 def test_gen_translations(translations, expected):
     captured = gen_translations_for_connect(translations, 1)
+    assert captured == expected
+
+@pytest.mark.parametrize(
+    "translations, expected",
+    [
+        ({1:
+         {'word': 'couillon',
+          'definition': 'argot (personne bête, stupide) (pejorative)',
+          'meanings': ['idiot'], 'examples': [["Ce boulot est à la portée de n'importe quel couillon."]]}},
+         f"<i><font color={yellow}><br>\nCe boulot est à la portée de n'importe quel couillon.\n</font></i>"
+         ),
+    ]
+)
+def test_gen_examples(translations, expected):
+    captured = gen_examples_for_connect(translations, False)
     assert captured == expected
 
 @pytest.mark.parametrize(
