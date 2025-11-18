@@ -4,12 +4,13 @@ from unittest.mock import patch, MagicMock
 # https://pavolkutaj.medium.com/how-to-test-printed-output-in-python-with-pytest-and-its-capsys-fixture-161010cfc5ad
 
 from WordRefAnkiNoteCreate import (
-    terminal_reset, bgreen, byellow, bmagenta, bcyan,
+    terminal_reset, bgreen, byellow, bmagenta, bcyan, cyan, magenta,
     gen_clean_filename_base,
     send_json_request,
     gen_word_for_voice_lookup,
     print_translations,
     print_examples,
+    gen_translations_for_connect,
 )
 
 # -------------------------
@@ -82,6 +83,20 @@ def test_print_translations(capsys, translations, expected_out):
     captured = capsys.readouterr()
     assert captured.out == expected_out
 
+@pytest.mark.parametrize(
+    "translations, expected",
+    [
+        ({1:
+         {'word': 'couillon',
+          'definition': 'argot (personne bête, stupide) (pejorative)',
+          'meanings': ['idiot'], 'examples': [["Ce boulot est à la portée de n'importe quel couillon."]]}},
+         f'<pre><font color={cyan}>idiot</font>    <font color={magenta}>argot'
+         f' (personne bête, stupide) (pejorative)</font>\n\n\n\n</pre>'),
+    ]
+)
+def test_gen_translations(translations, expected):
+    captured = gen_translations_for_connect(translations, 1)
+    assert captured == expected
 
 @pytest.mark.parametrize(
     "translations, expected_out",
