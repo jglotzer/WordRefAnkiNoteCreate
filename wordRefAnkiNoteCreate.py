@@ -7,7 +7,7 @@
 # Download page for AnkiConnect AddOn
 # https://ankiweb.net/shared/info/2055492159
 # Home page for AnkiConnect https://foosoft.net/projects/anki-connect/
-from . import wordreference as wr
+from WordRefAnkiNoteCreate import wordreference as wr
 import argparse
 import json
 import subprocess
