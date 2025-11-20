@@ -3,7 +3,7 @@ import pytest
 from unittest.mock import patch, MagicMock
 # https://pavolkutaj.medium.com/how-to-test-printed-output-in-python-with-pytest-and-its-capsys-fixture-161010cfc5ad
 
-from WordRefAnkiNoteCreate import (
+from ..WordRefAnkiNoteCreate import (
     terminal_reset, bgreen, byellow, bmagenta, bcyan, cyan, magenta, yellow,
     gen_clean_filename_base,
     send_json_request,
