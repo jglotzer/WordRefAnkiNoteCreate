@@ -10,7 +10,6 @@ import sys
 # Configuration
 # ------------------------
 ANKI_CONNECT_URL = "http://127.0.0.1:8765"
-MODEL_PATH = os.path.expanduser("~/.local/share/piper/voices/fr_FR-siwis-medium")
 GEN_SCRIPT = os.path.expanduser("~/bin/genFrench.sh")
 
 if len(sys.argv) > 1:

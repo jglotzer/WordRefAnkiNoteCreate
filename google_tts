@@ -37,7 +37,7 @@ if __name__ == "__main__":
         sys.exit(1)
     text = sys.argv[1]
     fileNameBase = sys.argv[2]
-    filename = f"{fileNameBase}.mp3"
+    filename = f"{fileNameBase}-google.mp3"
     boost_db = 8.0
     generate_tts_google(text, filename)
     subprocess.run(["/usr/bin/ffmpeg", "-y", "-loglevel", "error", "-i", "/tmp/" + filename,

@@ -50,7 +50,7 @@ if __name__ == "__main__":
         sys.exit(1)
     text = sys.argv[1]
     fileNameBase = sys.argv[2]
-    filename = f"{fileNameBase}.mp3"
+    filename = f"{fileNameBase}-polly.mp3"
     boost_db = 6.0
     generate_tts_ssml_polly(text, "/tmp/" + filename)
     subprocess.run(["/usr/bin/ffmpeg", "-y", "-loglevel", "error", "-i", "/tmp/" + filename,
