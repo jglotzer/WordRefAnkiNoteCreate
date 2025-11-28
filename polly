@@ -24,7 +24,6 @@ def generate_tts_ssml_polly(text, filename):
     polly = boto3.client("polly", region_name="us-east-1")  # IAD
 
     # Use SSML with an f-string to inject text dynamically
-    # Volume control doesn't seem to work.
     ssml_text = f"""
     <speak>
       <prosody volume="x-loud">{text}</prosody>
@@ -51,15 +50,16 @@ if __name__ == "__main__":
     text = sys.argv[1]
     fileNameBase = sys.argv[2]
     filename = f"{fileNameBase}-polly.mp3"
+    tmp_filename = "/tmp/" + filename
     boost_db = 6.0
-    generate_tts_ssml_polly(text, "/tmp/" + filename)
-    subprocess.run(["/usr/bin/ffmpeg", "-y", "-loglevel", "error", "-i", "/tmp/" + filename,
+    generate_tts_ssml_polly(text, tmp_filename)
+    subprocess.run(["/usr/bin/ffmpeg", "-y", "-loglevel", "error", "-i", tmp_filename,
                     "-filter:a", f"volume=+{boost_db}dB", filename], check=True,
                    stdout=subprocess.DEVNULL,
                    stderr=subprocess.DEVNULL
                    )
     print(f"✅ Saved to {filename}")
-    os.remove("/tmp/" + filename)
+    os.remove(tmp_filename)
     subprocess.run(["/usr/bin/mpv", filename], check=True,
                    stdout=subprocess.DEVNULL,
                    stderr=subprocess.DEVNULL
