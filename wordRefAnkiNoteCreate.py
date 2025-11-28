@@ -294,7 +294,7 @@ def main():
         front_str = (
             f"<pre><b>{article}{word}{adjective}</b>"
             + gen_examples_for_connect(translations, invert)
-            + f"<br>{sound_tag}<br></pre>"
+            + f"<br><br>{sound_tag}<br></pre>"
         )
         back_str = gen_translations_for_connect(translations, numdefs)
         data = json.loads(json_format_str)
