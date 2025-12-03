@@ -233,7 +233,7 @@ def parse_arguments():
 
 
 # usage:
-# WordReferenceAnkiNoteCreate.py [-h][-c][-a][-i][-n num]
+# WordReferenceAnkiNoteCreate.py [-h][-c][-a][-s][-i][-n num]
 #                                DICTIONARY_CODE [article] word
 
 # get translation and/or make Anki Card using wordreference.com
