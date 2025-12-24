@@ -20,7 +20,7 @@ PIPER_SERVER="piper.http_server"
 if ! $PGREP -f $PIPER_SERVER > /dev/null
 then
    echo "Piper HTTP server not running, starting in background."
-   python3 -m $PIPER_SERVER --model $MODEL &
+   nohup python3 -m "$PIPER_SERVER" --model "$MODEL" >/dev/null 2>&1 &
    sleep 3
 fi
 
