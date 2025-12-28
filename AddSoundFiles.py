@@ -15,7 +15,8 @@ GEN_SCRIPT = os.path.expanduser("~/bin/genFrench.sh")
 if len(sys.argv) > 1:
     NOTE_ID = int(sys.argv[1])
 else:
-    NOTE_ID = 1732210861169
+    print("Usage: AddSoundFiles <note_id>")
+    sys.exit(1)
 
 
 # ------------------------
