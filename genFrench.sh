@@ -16,11 +16,12 @@ PGREP="/usr/bin/pgrep"
 CURL="/usr/bin/curl"
 JQ="/usr/bin/jq"
 PIPER_SERVER="piper.http_server"
+PIPER_PYTHON="$HOME/.venvs/piper/bin/python"
 
 if ! $PGREP -f $PIPER_SERVER > /dev/null
 then
    echo "Piper HTTP server not running, starting in background."
-   nohup python3 -m "$PIPER_SERVER" --model "$MODEL" >/dev/null 2>&1 &
+   nohup $PIPER_PYTHON -m "$PIPER_SERVER" --model "$MODEL" >/dev/null 2>&1 &
    sleep 3
 fi
 
