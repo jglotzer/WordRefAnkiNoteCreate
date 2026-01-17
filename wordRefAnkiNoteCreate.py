@@ -94,11 +94,14 @@ def anki_request(action, **params):
 
 
 # Print translations to the terminal in an Anki Card specific way.
-def print_translations(translations, num_requested):
+def print_translations(translations, num_requested, num_skip):
     num_found = 0
     for value in translations.values():
         if num_found >= num_requested:
             break
+        if num_found < num_skip:
+            num_found += 1
+            continue
         print(bgreen + value["word"] + terminal_reset)
         # A supplied word can have multiple meanings.
         for meaning in value["meanings"]:
@@ -110,7 +113,7 @@ def print_translations(translations, num_requested):
 
 
 # Gen the HTML code for the translations that will go on back of created card.
-def gen_translations_for_connect(translations, num_requested):
+def gen_translations_for_connect(translations, num_requested, num_skip):
     # Tried optimizing the HTML for maximum maintainability but
     # can only do so much because
     # Anki/QtWebEngine changes the HTML to match the DOM.
@@ -119,6 +122,9 @@ def gen_translations_for_connect(translations, num_requested):
     for value in translations.values():
         if num_found >= num_requested:
             break
+        if num_found < num_skip:
+            num_found += 1
+            continue
         return_str += f"<font color={cyan}>"
         # A supplied word can have multiple meanings.
         for meaning in value["meanings"]:
@@ -222,6 +228,7 @@ def parse_arguments():
     parser.add_argument("-a", "--adjective", help="label with (adj)", action="store_true")
     parser.add_argument("-i", "--invert", help="invert in other direction", action="store_true")
     parser.add_argument("-n", "--numdefs", type=int, help="number of defns wanted")
+    parser.add_argument("-p", "--numskip", type=int, help="number of defns to skip")
     parser.add_argument(
         "word",
         nargs="+",
@@ -250,7 +257,8 @@ def parse_arguments():
 #   -h, --help       show this help message and exit
 #   -c, --connect    create an Anki Card as well
 #   -i, --invert     invert direction
-#   -n, --numdefs    number of defintiions requested
+#   -n, --numdefs    number of definitions to stop
+#   -p, --numskip    number of definitions to skip
 #   -a, --adjective  label as adjective
 #   -s, --se         treat as se verb
 def main():
@@ -276,13 +284,17 @@ def main():
         numdefs = args.numdefs
     else:
         numdefs = 9999
+    if args.numskip:
+        numskip = args.numskip
+    else:
+        numskip = -1
 
     # Get translations data from wordreference module.
     translations, *_ = wr.define_word(word, dictionary_code)
 
     # Always print retrieved data.
     print_examples(translations, invert)
-    print_translations(translations, numdefs)
+    print_translations(translations, numdefs, numskip)
 
     # If connect argument is given also generate a card (note) using Anki Connect.
     # Include a sound file using Piper model.
@@ -296,7 +308,7 @@ def main():
             + gen_examples_for_connect(translations, invert)
             + f"<br><br>{sound_tag}<br></pre>"
         )
-        back_str = gen_translations_for_connect(translations, numdefs)
+        back_str = gen_translations_for_connect(translations, numdefs, numskip)
         data = json.loads(json_format_str)
         data["params"]["note"]["fields"]["Front"] = front_str
         data["params"]["note"]["fields"]["Back"] = back_str
