@@ -141,9 +141,15 @@ def gen_translations_for_connect(translations, num_requested, num_skip):
 
 
 # Print examples to the terminal in an Anki Card specific way.
-def print_examples(translations, invert):
+def print_examples(translations, invert, num_requested, num_skip):
     print(byellow)
+    num_found = 0
     for value in translations.values():
+        if num_found >= num_requested:
+            break
+        if num_found < num_skip:
+            num_found += 1
+            continue
         for examples_list in value["examples"]:
             for example_index in range(len(examples_list)):
                 # Only want French examples, not English translations.
@@ -152,13 +158,20 @@ def print_examples(translations, invert):
                 if (not example_index and not invert) or (example_index and invert):
                     # Can have multiple phrases separated by a double space.
                     print(examples_list[example_index].replace("  ", "\n"))
+        num_found += 1
     print(terminal_reset)
 
 
 # Gen the HTML code for the examples that will go on front of created card.
-def gen_examples_for_connect(translations, invert):
+def gen_examples_for_connect(translations, invert, num_requested, num_skip):
     return_str = f"<i><font color={yellow}><br>\n"
+    num_found = 0
     for value in translations.values():
+        if num_found >= num_requested:
+            break
+        if num_found < num_skip:
+            num_found += 1
+            continue
         for examples_list in value["examples"]:
             for example_index in range(len(examples_list)):
                 # Only want French examples, not English translations.
@@ -167,6 +180,7 @@ def gen_examples_for_connect(translations, invert):
                 if (not example_index and not invert) or (example_index and invert):
                     # Can have multiple phrases separated by a double space.
                     return_str += examples_list[example_index].replace("  ", "\n") + "\n"
+        num_found += 1
     return_str += "</font></i>"  # close tags.
     return return_str.replace('"', "&quot;")  # Protect JSON from double quotes by encoding them.
 
@@ -293,7 +307,7 @@ def main():
     translations, *_ = wr.define_word(word, dictionary_code)
 
     # Always print retrieved data.
-    print_examples(translations, invert)
+    print_examples(translations, invert, numdefs, numskip)
     print_translations(translations, numdefs, numskip)
 
     # If connect argument is given also generate a card (note) using Anki Connect.
@@ -305,7 +319,7 @@ def main():
         # close <pre> tag.
         front_str = (
             f"<pre><b>{article}{word}{adjective}</b>"
-            + gen_examples_for_connect(translations, invert)
+            + gen_examples_for_connect(translations, invert, numdefs, numskip)
             + f"<br><br>{sound_tag}<br></pre>"
         )
         back_str = gen_translations_for_connect(translations, numdefs, numskip)
