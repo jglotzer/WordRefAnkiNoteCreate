@@ -93,8 +93,8 @@ note_list = anki_request("findNotes", query="deck:French")
 # Here's a poor man's multi use paradigm - pick one of the following two lines
 # ATTN: Must use second form when combining with Anki AddOn!
 
-for note_id in note_list[3900:4000]:
-# for note_id in [NOTE_ID]:
+# for note_id in note_list[7800:7900]:
+for note_id in [NOTE_ID]:
     # ------------------------
     # Step 1: Get note content
     # ------------------------
