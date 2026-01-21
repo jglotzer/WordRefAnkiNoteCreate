@@ -114,9 +114,8 @@ def print_translations(translations, num_requested, num_skip):
 
 # Gen the HTML code for the translations that will go on back of created card.
 def gen_translations_for_connect(translations, num_requested, num_skip):
-    # Tried optimizing the HTML for maximum maintainability but
-    # can only do so much because
-    # Anki/QtWebEngine changes the HTML to match the DOM.
+    # Tried optimizing the HTML for maximum maintainability but can only do
+    # so much because Anki/QtWebEngine changes the HTML to match the DOM.
     return_str = "<pre>"
     num_found = 0
     for value in translations.values():
@@ -193,21 +192,22 @@ def gen_clean_filename_base(word):
     translation_table = str.maketrans(before, after, remove)
     return word.translate(translation_table).rstrip("_")
 
-def gen_word_for_voice_lookup(article, word, se):
+def gen_word_for_voice_lookup_and_article(article, word, se):
     # Add terminal space to avoid dropping final syllable.
     word_for_voice_lookup = f"{article}{word} "
+    # For "se" verbs there is special handling for both voice lookup and article.
     if se:
         if word_for_voice_lookup[0] in ("a", "e", "é", "i", "o", "ô", "u", "y"):
-            word_for_voice_lookup = f"{word_for_voice_lookup}  - s'{word_for_voice_lookup}"
+            word_for_voice_lookup = f"{word_for_voice_lookup}  - s'{word_for_voice_lookup} "
             article = "(s') "  # overload "article" since can only be a verb.
         else:
-            word_for_voice_lookup = f"{word_for_voice_lookup}  - se {word_for_voice_lookup}"
+            word_for_voice_lookup = f"{word_for_voice_lookup}  - se {word_for_voice_lookup} "
             article = "(se) "  # overload "article" since can only be a verb.
-    return word_for_voice_lookup
+    return (word_for_voice_lookup, article)
 
-def gen_sound_file_and_tag(article, word, se):
+def gen_sound_file_tag_and_article(article, word, se):
     filename_base = gen_clean_filename_base(word)
-    word_for_voice_lookup = gen_word_for_voice_lookup(article, word, se)
+    word_for_voice_lookup, article = gen_word_for_voice_lookup_and_article(article, word, se)
     output_mp3 = f"/tmp/{filename_base}.mp3"
     cmd = [GEN_SCRIPT, word_for_voice_lookup, f"/tmp/{filename_base}"]
     print("🎤 Generating audio with Piper...")
@@ -226,9 +226,9 @@ def gen_sound_file_and_tag(article, word, se):
     sound_tag = f"[sound:{media_filename}]"
 
     # ------------------------
-    # Step 4: Return Sount Tag string and mp3 output file
+    # Step 4: Return Sound Tag string and mp3 output file
     # ------------------------
-    return (sound_tag, output_mp3)
+    return (sound_tag, output_mp3, article)
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="get translation, make Anki Note with wordreference.com.")
@@ -313,7 +313,7 @@ def main():
     # If connect argument is given also generate a card (note) using Anki Connect.
     # Include a sound file using Piper model.
     if connect:
-        (sound_tag, output_mp3) = gen_sound_file_and_tag(article, word, se)
+        (sound_tag, output_mp3, article) = gen_sound_file_tag_and_article(article, word, se)
 
         # Format the supplied word, add examples, leave space for pics,
         # close <pre> tag.
@@ -328,11 +328,10 @@ def main():
         data["params"]["note"]["fields"]["Back"] = back_str
         json_string = json.dumps(data, ensure_ascii=False)  # Don't want to escape non-ASCII chars
         result = send_json_request(json_string)
+        os.remove(output_mp3)
         if result is not None:
             print("Created a new Anki Note with ID:{}\n".format(result))
-            os.remove(output_mp3)
         else:
-            os.remove(output_mp3)
             sys.exit(1)
 
 
