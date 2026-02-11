@@ -13,7 +13,7 @@ entered in the HTML will be rendered as such, obviating the need to add any extr
 
 # Usage
 ```text
-usage: WordReferenceAnkiNoteCreate.py [-h] [-c] [-i] [-a] [-n numdefs] DICTIONARY_CODE word
+usage: wordRefAnkiNoteCreate.py [-h] [-c] [-a] [-s] [-i] [-n NUMDEFS] [-p NUMSKIP] DICTIONARY_CODE word
 
 positional arguments:
   DICTIONARY_CODE        dictionary code (e.g. fren for french to english, enfr for english to french)
@@ -23,9 +23,11 @@ positional arguments:
 options:
   -h, --help             show this help message and exit
   -c, --connect          create an Anki Card as well
+  -a, --adjective        label word with (adj)
+  -s, --se               treat as se verb
   -i, --invert           invert in other direction
   -n, --numdefs NUMDEFS  number of defns wanted
-  -a, --adjective        label word with (adj)
+  -p, --numskip NUMSKIP  number of defns to skip
 
 Obtain console output *only* by omitting the -c switch. This can be thought of as a "dryrun" mode or as a quick check.
 Obtain console output *and* Anki Note by supplying the -c switch. This is really the object of the exercise.
@@ -36,7 +38,12 @@ examples are desired in the foreign language (if omitted examples are also in En
 Numdefs switch is intended to truncate the number of definitions returned
 because WordReference often throws in "extra" definitions that may be related but not essential.
 
+Numskip switch is intended to skip the number of definitions returned
+because you may want to go no further than n definitions but also to skip the first m definitions.
+
 Adjective switch will append the text (adj) to the supplied word.
+
+Se switch will cause audio generation to include both the "se" and non-"se" form of a verb.
 
 The word parameter can have an optional article e.g. "un bateau" ou "bateau" will both look up
 the same word but the supplied article will be displayed on the card, helpful for gendered
@@ -45,6 +52,7 @@ languages.
 
 # Dependencies
 * wordreference.py [wordreference.py](https://github.com/n-wissam/wordreference)
+(Now must add a user agent string to the requests.get call else 403 errors are returned.)
 * Anki running with AnkiConnect AddOn installed [AnkiConnect AddOn](https://foosoft.net/projects/anki-connect/)
 
 # User Changes Needed
