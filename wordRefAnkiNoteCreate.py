@@ -240,6 +240,7 @@ def parse_arguments():
     )
     parser.add_argument("-c", "--connect", help="create an Anki Note as well", action="store_true")
     parser.add_argument("-a", "--adjective", help="label with (adj)", action="store_true")
+    parser.add_argument("-s", "--se", help="treat as se verb", action="store_true")
     parser.add_argument("-i", "--invert", help="invert in other direction", action="store_true")
     parser.add_argument("-n", "--numdefs", type=int, help="number of defns wanted")
     parser.add_argument("-p", "--numskip", type=int, help="number of defns to skip")
@@ -248,7 +249,6 @@ def parse_arguments():
         nargs="+",
         help="word (with optional article) to translate or to make Anki Note",
     )
-    parser.add_argument("-s", "--se", help="treat as se verb", action="store_true")
     args = parser.parse_args()
     return args
 
